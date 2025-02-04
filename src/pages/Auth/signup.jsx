@@ -4,14 +4,13 @@ import {
   getAuth,
   onAuthStateChanged,
   sendPasswordResetEmail,
-  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword, // Updated for sign-up
   signOut,
 } from "firebase/auth";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-// import { collection, doc, getDoc } from 'firebase/firestore';
 import { useToast } from "@/components/ui/use-toast";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -50,11 +49,10 @@ const formSchemaRest = z.object({
   }),
 });
 
-const SignIn = () => {
+const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
-  // const UserCollectionRef = collection(db, 'users');
   const [loading, setLoading] = useState(false);
   const [isNewUser, setIsNewUser] = useState(true);
   const [restForm, setRestForm] = useState(false);
@@ -66,32 +64,17 @@ const SignIn = () => {
       if (user) {
         const idTokenResult = await user.getIdTokenResult();
         const role = idTokenResult.claims.role;
+
         if (isNewUser) {
-          // New user signing in for the first time, don't show "Already signed in" message
           setIsNewUser(false);
         } else {
-          // User is already signed in, show "Already signed in" message
-          // const userDocRef = doc(UserCollectionRef, user.uid);
-          // const userDocSnap = await getDoc(userDocRef);
-          // const role = userDocSnap.data()?.role;
-
-          if (
-            form.getValues("email") === "" &&
-            form.getValues("password") === ""
-          ) {
+          if (form.getValues("email") === "" && form.getValues("password") === "") {
             toast({
               title: "Already signed in",
               description: "You are already signed in",
             });
           }
 
-          if (role === "admin") {
-            navigate("/dashboard");
-          } else if (role === "user") {
-            navigate("/");
-          } else {
-            navigate("/contact");
-          }
         }
       }
     });
@@ -113,6 +96,7 @@ const SignIn = () => {
       password: "",
     },
   });
+
   const formRest = useForm({
     resolver: zodResolver(formSchemaRest),
     defaultValues: {
@@ -134,10 +118,7 @@ const SignIn = () => {
           setMessage("Check your email to reset your password");
         })
         .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          console.error("Error sending password reset email:", errorMessage);
-          console.error("Error code:", errorCode);
+          console.error("Error sending password reset email:", error.message);
         });
     } catch (error) {
       console.error("Error sending password reset email:", error);
@@ -154,7 +135,7 @@ const SignIn = () => {
   async function onSubmit(values) {
     try {
       setLoading(true);
-      const userCredential = await signInWithEmailAndPassword(
+      const userCredential = await createUserWithEmailAndPassword( // Updated for sign-up
         auth,
         values.email,
         values.password,
@@ -162,53 +143,38 @@ const SignIn = () => {
       const user = userCredential.user;
 
       const idTokenResult = await user.getIdTokenResult();
-
       const role = idTokenResult.claims.role;
 
-      // Get the user's role
-      // const userDocRef = doc(collection(db, 'users'), user.uid);
-      // const userDocSnap = await getDoc(userDocRef);
-      // // console.log('userDocSnap', userDocSnap.data());
-      // const role = userDocSnap.data()?.role;
-      // localStorage.setItem('ID', user.uid);
-
-      // Verify the user's role
-      if (role === "admin") {
-        // Grant access to admin features
-        // console.log('Admin signed in:', user);
-        toast({
-          variant: "destructive",
-          title: "User login session",
-          description: "Admin can only login to admin dashboard",
-        });
-        await signOut(auth);
-        navigate("/admin/login");
-      } else if (role === "user") {
-        // Grant access to user features
-        // console.log('User signed in:', user);
-        toast({
-          variant: "success",
-          title: "Signed in",
-          description: "You have successfully signed in",
-          duration: 2000,
-        });
-        navigate("/");
-      } else {
-        // Handle unknown role
-        // console.error('Unknown role:', user);
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Unknown role",
-          duration: 2000,
-        });
-        navigate("/contact");
-      }
+    //   if (role === "admin") {
+    //     toast({
+    //       variant: "destructive",
+    //       title: "User sign-up session",
+    //       description: "Admin can only login to admin dashboard",
+    //     });
+    //     await signOut(auth);
+    //     navigate("/admin/login");
+    //   } else if (role === "user") {
+    //     toast({
+    //       variant: "success",
+    //       title: "Signed up",
+    //       description: "You have successfully signed up",
+    //       duration: 2000,
+    //     });
+    //     navigate("/");
+    //   } else {
+    //     toast({
+    //       variant: "destructive",
+    //       title: "Error",
+    //       description: "Unknown role",
+    //       duration: 2000,
+    //     });
+    //     navigate("/contact");
+    //   }
     } catch (error) {
-      console.error("Error signing in:", error);
+      console.error("Error signing up:", error);
       toast({
         variant: "destructive",
-        title: "Error signing in",
+        title: "Error signing up",
         description: error.message,
         duration: 2000,
       });
@@ -225,23 +191,10 @@ const SignIn = () => {
   const handleResetForm = () => {
     setRestForm(!restForm);
   };
+
   return (
     <div className="flex h-full max-h-screen min-h-[600px] flex-col items-center justify-around gap-10">
-      <div className="text-center">
-        <h1 className="text-[35px] font-bold dark:text-white">Welcome!</h1>
-        <p className="-mt-2 text-sm text-gray-600 dark:text-gray-300">
-          Sign to your account
-        </p>
-      </div>
-      <div className="m-0 rounded-md px-0 py-0 dark:text-white">
-        <p className="text-center underline">For testing</p>
-        <Button
-          onClick={handleFilldata}
-          className="my-2 w-full font-semibold text-white"
-        >
-          Click to Fill{" "}
-        </Button>
-      </div>
+    
       <div className="flex w-full max-w-[320px] flex-col gap-5">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -254,14 +207,11 @@ const SignIn = () => {
                   <FormControl>
                     <Input
                       type="email"
-                      className="h-[50px]"
+                      className="h-[50px] !text-white"
                       placeholder="Email"
                       {...field}
                     />
                   </FormControl>
-                  {/* <FormDescription>
-                                        This is your public display name.
-                                    </FormDescription> */}
                   <FormMessage />
                 </FormItem>
               )}
@@ -276,7 +226,7 @@ const SignIn = () => {
                     <div className="relative">
                       <Input
                         type={showPassword ? "text" : "password"}
-                        className="h-[50px]"
+                        className="h-[50px] !text-white"
                         placeholder="Password"
                         {...field}
                       />
@@ -289,14 +239,6 @@ const SignIn = () => {
                     </div>
                   </FormControl>
                   <FormMessage />
-                  <div>
-                    <p
-                      className="mt-1 cursor-pointer text-sm font-medium text-emerald-600 underline"
-                      onClick={handleResetForm}
-                    >
-                      Forgot password?
-                    </p>
-                  </div>
                 </FormItem>
               )}
             />
@@ -305,79 +247,15 @@ const SignIn = () => {
               loading={loading}
               type="submit"
             >
-              Login
+              Sign Up
             </LoadingButton>
           </form>
         </Form>
       </div>
-      <div className="text-center">
-        <h1 className="text-[32px] font-bold text-emerald-600">MARK !T</h1>
-        <span className="text-[12px] dark:text-white">By IEDC EMEA</span>
-      </div>
 
-      <p className="text-sm dark:text-white">
-        Don't have an account?{" "}
-        <button onClick={handleContact} className="text-emerald-700 underline">
-          contact admin
-        </button>
-      </p>
 
-      <Dialog open={restForm} onOpenChange={handleResetForm}>
-        <DialogContent>
-          <DialogHeader className="mx-auto text-center">
-            <div ref={parent}>
-              <DialogTitle className="text-center dark:text-white">
-                Forgot Password
-              </DialogTitle>
-              <DialogDescription>
-                Enter your email address to reset your password
-              </DialogDescription>
-              {message && <p className="text-emerald-500">{message}</p>}
-            </div>
-          </DialogHeader>
-          <div>
-            <Form {...formRest}>
-              <form
-                className="space-y-8"
-                onSubmit={formRest.handleSubmit(onSubmitReset)}
-              >
-                <FormField
-                  control={formRest.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="email"
-                          className="h-[50px]"
-                          placeholder="Email"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <LoadingButton
-                  className="mt-6 w-full !bg-emerald-600 font-bold !text-white"
-                  loading={loading}
-                  type="submit"
-                >
-                  Reset Password
-                </LoadingButton>
-                <p onClick={handleResetForm} className="w-full text-center">
-                  <span className="cursor-pointer underline dark:text-white">
-                    I remember my password
-                  </span>
-                </p>
-              </form>
-            </Form>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
 
-export default SignIn;
+export default SignUp;
