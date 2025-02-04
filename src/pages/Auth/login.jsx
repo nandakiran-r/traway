@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 // import { collection, doc, getDoc } from 'firebase/firestore';
 import { useToast } from "@/components/ui/use-toast";
 
-import '../../assets/styles/login.css';
+import '@/assets/styles/login.css';
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -33,9 +33,14 @@ import {
     DialogDescription,
     DialogHeader,
     DialogTitle,
-} from "@/components/ui/dialog";
+    DialogTrigger,
+
+} from "@/components/ui/dialog2";
 import { LoadingButton } from "@/components/ui/loading-button";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { useModel } from '@/hooks/useModel'
+import { Plus, Pencil } from "lucide-react";
+
 
 const formSchema = z.object({
     email: z.string().email({
@@ -55,6 +60,7 @@ const formSchemaRest = z.object({
 const SignIn = () => {
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
+    const { isOpen, openModal, closeModal: handleCloseModal } = useModel()
     const { toast } = useToast();
     // const UserCollectionRef = collection(db, 'users');
     const [loading, setLoading] = useState(false);
@@ -69,14 +75,8 @@ const SignIn = () => {
                 const idTokenResult = await user.getIdTokenResult();
                 const role = idTokenResult.claims.role;
                 if (isNewUser) {
-                    // New user signing in for the first time, don't show "Already signed in" message
                     setIsNewUser(false);
                 } else {
-                    // User is already signed in, show "Already signed in" message
-                    // const userDocRef = doc(UserCollectionRef, user.uid);
-                    // const userDocSnap = await getDoc(userDocRef);
-                    // const role = userDocSnap.data()?.role;
-
                     if (
                         form.getValues("email") === "" &&
                         form.getValues("password") === ""
@@ -86,23 +86,11 @@ const SignIn = () => {
                             description: "You are already signed in",
                         });
                     }
-
-                    //   if (role === "admin") {
-                    //     navigate("/dashboard");
-                    //   } else if (role === "user") {
-                    //     navigate("/");
-                    //   } else {
-                    //     navigate("/contact");
-                    //   }
                 }
             }
         });
         return () => unsubscribe();
     }, [isNewUser]);
-
-    const handleContact = () => {
-        navigate("/contact");
-    };
 
     const toggleShowPassword = () => {
         setShowPassword(!showPassword);
@@ -115,43 +103,43 @@ const SignIn = () => {
             password: "password",
         },
     });
-    const formRest = useForm({
-        resolver: zodResolver(formSchemaRest),
-        defaultValues: {
-            email: "",
-        },
-    });
+    // const formRest = useForm({
+    //     resolver: zodResolver(formSchemaRest),
+    //     defaultValues: {
+    //         email: "",
+    //     },
+    // });
 
-    async function onSubmitReset(values) {
-        try {
-            setLoading(true);
-            const auth = getAuth();
-            await sendPasswordResetEmail(auth, values.email)
-                .then(() => {
-                    toast({
-                        variant: "success",
-                        title: "Password reset email sent",
-                        description: "Check your email to reset your password",
-                    });
-                    setMessage("Check your email to reset your password");
-                })
-                .catch((error) => {
-                    const errorCode = error.code;
-                    const errorMessage = error.message;
-                    console.error("Error sending password reset email:", errorMessage);
-                    console.error("Error code:", errorCode);
-                });
-        } catch (error) {
-            console.error("Error sending password reset email:", error);
-            toast({
-                variant: "destructive",
-                title: "Error sending password reset email",
-                description: error.message,
-            });
-        } finally {
-            setLoading(false);
-        }
-    }
+    // async function onSubmitReset(values) {
+    //     try {
+    //         setLoading(true);
+    //         const auth = getAuth();
+    //         await sendPasswordResetEmail(auth, values.email)
+    //             .then(() => {
+    //                 toast({
+    //                     variant: "success",
+    //                     title: "Password reset email sent",
+    //                     description: "Check your email to reset your password",
+    //                 });
+    //                 setMessage("Check your email to reset your password");
+    //             })
+    //             .catch((error) => {
+    //                 const errorCode = error.code;
+    //                 const errorMessage = error.message;
+    //                 console.error("Error sending password reset email:", errorMessage);
+    //                 console.error("Error code:", errorCode);
+    //             });
+    //     } catch (error) {
+    //         console.error("Error sending password reset email:", error);
+    //         toast({
+    //             variant: "destructive",
+    //             title: "Error sending password reset email",
+    //             description: error.message,
+    //         });
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // }
 
     async function onSubmit(values) {
         try {
@@ -166,8 +154,6 @@ const SignIn = () => {
             // const idTokenResult = await user.getIdTokenResult();
 
             // const role = idTokenResult.claims.role;
-
-
             // Verify the user's role
             if (user) {
                 toast({
@@ -202,125 +188,134 @@ const SignIn = () => {
     const handleResetForm = () => {
         setRestForm(!restForm);
     };
+
     return (
+        <Dialog open={isOpen} onOpenChange={(open) => (open ? openModal() : handleCloseModal())}>
+            <DialogTrigger asChild>
+              
+                    <Button>
+                        <Plus className="mr-1" /> Add
+                    </Button>
+               
+            </DialogTrigger>
+            <DialogContent>
+                <div className="login p-10">
+                    <div className="session">
+                        <div className="left"></div>
+                        <div className="log-in">
+                            <Form {...form}>
+                                <form onSubmit={form.handleSubmit(onSubmit)} className="">
+                                    <h4>
+                                        Welcome to <br /> <span className="brand">TraWay</span>
+                                    </h4>
+                                    <p>Welcome back! Log in to your track your finance</p>
+                                    <FormField
+                                        control={form.control}
+                                        name="email"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormControl>
+                                                    <div className="floating-label">
 
-        <div className="login">
-            <div className="session">
-                <div className="left"></div>
-                <div className="log-in">
-                    <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="">
-                            <h4>
-                                Welcome to <br /> <span className="brand">TraWay</span>
-                            </h4>
-                            <p>Welcome back! Log in to your track your finance</p>
-                            <FormField
-                                control={form.control}
-                                name="email"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormControl>
-                                            <div className="floating-label">
-
-                                                <Input
-                                                    type="email"
-                                                    className="h-[50px]"
-                                                    placeholder="Email"
-                                                    {...field}
-                                                />
-                                                <label htmlFor="email">Email:</label>
-                                                <div className="icon">
-                                                    <svg
-                                                        enableBackground="new 0 0 100 100"
-                                                        version="1.1"
-                                                        viewBox="0 0 100 100"
-                                                        xmlSpace="preserve"
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                    >
-                                                        <g transform="translate(0 -952.36)">
-                                                            <path d="m17.5 977c-1.3 0-2.4 1.1-2.4 2.4v45.9c0 1.3 1.1 2.4 2.4 2.4h64.9c1.3 0 2.4-1.1 2.4-2.4v-45.9c0-1.3-1.1-2.4-2.4-2.4h-64.9zm2.4 4.8h60.2v1.2l-30.1 22-30.1-22v-1.2zm0 7l28.7 21c0.8 0.6 2 0.6 2.8 0l28.7-21v34.1h-60.2v-34.1z" />
-                                                        </g>
-                                                        <rect className="st0" width={100} height={100} fill="none" />
-                                                    </svg>
-                                                </div>
-                                            </div>
-                                        </FormControl>
-
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name="password"
-                                render={({ field }) => (
-                                    <FormItem>
-
-                                        <FormControl>
-                                            <div className="floating-label relative">
-                                                <Input
-                                                    type={showPassword ? "text" : "password"}
-                                                    className="h-[50px]"
-                                                    placeholder="Password"
-                                                    {...field}
-                                                />
-                                                <label htmlFor="password">Password:</label>
-                                                <div className="icon">
-                                                    <svg
-                                                        enableBackground="new 0 0 24 24"
-                                                        version="1.1"
-                                                        viewBox="0 0 24 24"
-                                                        xmlSpace="preserve"
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                    >
-                                                        <rect className="st0" width={24} height={24} fill="none" />
-                                                        <path className="st1" d="M19,21H5V9h14V21z M6,20h12V10H6V20z" />
-                                                        <path
-                                                            className="st1"
-                                                            d="M16.5,10h-1V7c0-1.9-1.6-3.5-3.5-3.5S8.5,5.1,8.5,7v3h-1V7c0-2.5,2-4.5,4.5-4.5s4.5,2,4.5,4.5V10z"
+                                                        <Input
+                                                            type="email"
+                                                            className="h-[50px]"
+                                                            placeholder="Email"
+                                                            {...field}
                                                         />
-                                                        <path
-                                                            className="st1"
-                                                            d="m12 16.5c-0.8 0-1.5-0.7-1.5-1.5s0.7-1.5 1.5-1.5 1.5 0.7 1.5 1.5-0.7 1.5-1.5 1.5zm0-2c-0.3 0-0.5 0.2-0.5 0.5s0.2 0.5 0.5 0.5 0.5-0.2 0.5-0.5-0.2-0.5-0.5-0.5z"
-                                                        />
-                                                    </svg>
-                                                </div>
-                                                <div
-                                                    className="absolute right-4 top-4 cursor-pointer dark:text-white"
-                                                    onClick={toggleShowPassword}
-                                                >
-                                                    {showPassword ? <IoEyeOutline /> : <IoEyeOffOutline />}
-                                                </div>
-                                            </div>
-                                        </FormControl>
-                                        <FormMessage />
-                                        <div>
-                                            <p
-                                                className="mt-1 cursor-pointer text-sm font-medium text-emerald-600 underline"
-                                                onClick={handleResetForm}
-                                            >
-                                                Forgot password?
-                                            </p>
-                                        </div>
-                                    </FormItem>
-                                )}
-                            />
-                            <div style={{ display: "flex", alignItems: "center", justifyContent: 'space-between', width: '100%', flexDirection: 'row' }}>
-                                <a style={{ textDecoration: "none", color: "blueviolet", marginLeft: 40 }} href="/register">Register</a>
-                                <LoadingButton
-                                    className="mt-6 w-full bg-emerald-600 font-bold !text-white transition-all ease-in-out hover:bg-emerald-700"
-                                    loading={loading}
-                                    type="submit"
-                                >
-                                    Login
-                                </LoadingButton>
-                            </div>
-                        </form>
-                    </Form>
-                </div>
+                                                        <label htmlFor="email">Email:</label>
+                                                        <div className="icon">
+                                                            <svg
+                                                                enableBackground="new 0 0 100 100"
+                                                                version="1.1"
+                                                                viewBox="0 0 100 100"
+                                                                xmlSpace="preserve"
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                            >
+                                                                <g transform="translate(0 -952.36)">
+                                                                    <path d="m17.5 977c-1.3 0-2.4 1.1-2.4 2.4v45.9c0 1.3 1.1 2.4 2.4 2.4h64.9c1.3 0 2.4-1.1 2.4-2.4v-45.9c0-1.3-1.1-2.4-2.4-2.4h-64.9zm2.4 4.8h60.2v1.2l-30.1 22-30.1-22v-1.2zm0 7l28.7 21c0.8 0.6 2 0.6 2.8 0l28.7-21v34.1h-60.2v-34.1z" />
+                                                                </g>
+                                                                <rect className="st0" width={100} height={100} fill="none" />
+                                                            </svg>
+                                                        </div>
+                                                    </div>
+                                                </FormControl>
 
-            </div>
-            {/* <Dialog open={restForm} onOpenChange={handleResetForm}>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="password"
+                                        render={({ field }) => (
+                                            <FormItem>
+
+                                                <FormControl>
+                                                    <div className="floating-label relative">
+                                                        <Input
+                                                            type={showPassword ? "text" : "password"}
+                                                            className="h-[50px]"
+                                                            placeholder="Password"
+                                                            {...field}
+                                                        />
+                                                        <label htmlFor="password">Password:</label>
+                                                        <div className="icon">
+                                                            <svg
+                                                                enableBackground="new 0 0 24 24"
+                                                                version="1.1"
+                                                                viewBox="0 0 24 24"
+                                                                xmlSpace="preserve"
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                            >
+                                                                <rect className="st0" width={24} height={24} fill="none" />
+                                                                <path className="st1" d="M19,21H5V9h14V21z M6,20h12V10H6V20z" />
+                                                                <path
+                                                                    className="st1"
+                                                                    d="M16.5,10h-1V7c0-1.9-1.6-3.5-3.5-3.5S8.5,5.1,8.5,7v3h-1V7c0-2.5,2-4.5,4.5-4.5s4.5,2,4.5,4.5V10z"
+                                                                />
+                                                                <path
+                                                                    className="st1"
+                                                                    d="m12 16.5c-0.8 0-1.5-0.7-1.5-1.5s0.7-1.5 1.5-1.5 1.5 0.7 1.5 1.5-0.7 1.5-1.5 1.5zm0-2c-0.3 0-0.5 0.2-0.5 0.5s0.2 0.5 0.5 0.5 0.5-0.2 0.5-0.5-0.2-0.5-0.5-0.5z"
+                                                                />
+                                                            </svg>
+                                                        </div>
+                                                        <div
+                                                            className="absolute right-4 top-4 cursor-pointer dark:text-white"
+                                                            onClick={toggleShowPassword}
+                                                        >
+                                                            {showPassword ? <IoEyeOutline /> : <IoEyeOffOutline />}
+                                                        </div>
+                                                    </div>
+                                                </FormControl>
+                                                <FormMessage />
+                                                <div>
+                                                    <p
+                                                        className="mt-1 cursor-pointer text-sm font-medium text-emerald-600 underline"
+                                                        onClick={handleResetForm}
+                                                    >
+                                                        Forgot password?
+                                                    </p>
+                                                </div>
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <div style={{ display: "flex", alignItems: "center", justifyContent: 'space-between', width: '100%', flexDirection: 'row' }}>
+                                        <a style={{ textDecoration: "none", color: "blueviolet", marginLeft: 40 }} href="/register">Register</a>
+                                        <LoadingButton
+                                            className="mt-6 w-full bg-emerald-600 font-bold !text-white transition-all ease-in-out hover:bg-emerald-700"
+                                            loading={loading}
+                                            type="submit"
+                                        >
+                                            Login
+                                        </LoadingButton>
+                                    </div>
+                                </form>
+                            </Form>
+                        </div>
+
+                    </div>
+                    {/* <Dialog open={restForm} onOpenChange={handleResetForm}>
         <DialogContent>
           <DialogHeader className="mx-auto text-center">
             <div ref={parent}>
@@ -374,7 +369,9 @@ const SignIn = () => {
           </div>
         </DialogContent>
       </Dialog> */}
-        </div>
+                </div>
+            </DialogContent>
+        </Dialog>
     );
 };
 
