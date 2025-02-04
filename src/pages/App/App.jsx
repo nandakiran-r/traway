@@ -17,7 +17,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 to-indigo-100 p-4 sm:p-6 lg:p-8">
       {/* Glassmorphism Navigation */}
-      <nav className="fixed top-4 left-4 right-4 bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg rounded-2xl shadow-lg z-50">
+      <nav className="fixed top-4 left-4 right-4 bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg rounded-2xl shadow-lg z-50 px-24 max-w-7xl mx-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center">
