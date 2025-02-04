@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Car, Map, Clock, Bell, BarChart3, Shield, Phone, Mail, MapPin, Users, Building2, Trophy, History } from 'lucide-react';
 import { useNavigate } from 'react-router';
 
-function Home() {
+function App() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -329,4 +329,4 @@ function FeatureCard({ icon, title, description }) {
   );
 }
 
-export default Home;
+export default App;
