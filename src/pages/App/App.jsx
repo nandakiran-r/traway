@@ -1,332 +1,223 @@
-import React, { useState } from 'react';
-import { Car, Map, Clock, Bell, BarChart3, Shield, Phone, Mail, MapPin, Users, Building2, Trophy, History } from 'lucide-react';
-import { useNavigate } from 'react-router';
+import {
+  Car,
+  Map,
+  BarChart3,
+  Users,
+  AlertTriangle,
+  Clock,
+  Settings,
+  Bell,
+  Search,
+  ChevronDown,
+  ArrowUp,
+  ArrowDown,
+} from "lucide-react"
 
-function App() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: ''
-  });
-
-  const navigate = useNavigate();
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Handle form submission here
-    console.log('Form submitted:', formData);
-  };
-
+export default function App() {
   return (
-    <div className="min-h-screen bg-white">
-      {/* Hero Section */}
-      <header id="home" className="relative h-[600px]">
-        <div className="absolute inset-0">
-          <img
-            src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&q=80"
-            alt="Traffic background"
-            className="w-full h-full object-cover"
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 to-indigo-100 p-4 sm:p-6 lg:p-8">
+      {/* Glassmorphism Navigation */}
+      <nav className="fixed top-4 left-4 right-4 bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg rounded-2xl shadow-lg z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center">
+              <Car className="h-8 w-8 text-blue-600" />
+              <span className="ml-2 text-2xl font-bold text-gray-900">Traway</span>
+            </div>
+            <div className="hidden md:block">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  className="w-64 px-4 py-2 rounded-full bg-white bg-opacity-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <Search className="absolute right-3 top-2.5 h-5 w-5 text-gray-400" />
+              </div>
+            </div>
+            <div className="flex items-center space-x-4">
+              <button className="p-2 rounded-full text-gray-600 hover:bg-white hover:bg-opacity-25 focus:outline-none">
+                <Bell className="h-6 w-6" />
+              </button>
+              <button className="p-2 rounded-full text-gray-600 hover:bg-white hover:bg-opacity-25 focus:outline-none">
+                <Settings className="h-6 w-6" />
+              </button>
+              <div className="flex items-center space-x-2">
+                <img
+                  className="h-8 w-8 rounded-full"
+                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                  alt="User avatar"
+                />
+                <span className="text-sm font-medium text-gray-700">John Doe</span>
+                <ChevronDown className="h-4 w-4 text-gray-500" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* Dashboard Content */}
+      <main className="pt-24 max-w-7xl mx-auto">
+        <h1 className="text-3xl font-bold text-gray-900 mb-6">Dashboard</h1>
+
+        {/* Stats Overview */}
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+          <StatCard icon={<Map className="h-6 w-6 text-blue-600" />} title="Active Routes" value="24" change={2} />
+          <StatCard
+            icon={<Users className="h-6 w-6 text-green-600" />}
+            title="Total Users"
+            value="12,345"
+            change={5.3}
           />
-          <div className="absolute inset-0 bg-black/50"></div>
+          <StatCard
+            icon={<AlertTriangle className="h-6 w-6 text-yellow-600" />}
+            title="Traffic Alerts"
+            value="7"
+            change={-1}
+          />
+          <StatCard
+            icon={<Clock className="h-6 w-6 text-purple-600" />}
+            title="Avg. Commute Time"
+            value="28 min"
+            change={-2.5}
+          />
         </div>
-        
-        <nav className="relative z-10 container mx-auto px-6 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <Car className="h-8 w-8 text-white" />
-              <span className="text-2xl font-bold text-white">Traway</span>
-            </div>
-            <div className="hidden md:flex space-x-8">
-              <a href="#home" className="text-white hover:text-gray-200">Home</a>
-              <a href="#features" className="text-white hover:text-gray-200">Features</a>
-              <a href="#about" className="text-white hover:text-gray-200">About</a>
-              <a href="#contact" className="text-white hover:text-gray-200">Contact</a>
-            </div>
+
+        {/* Traffic Overview and Recent Alerts */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          <div className="lg:col-span-2">
+            <TrafficOverview />
           </div>
-        </nav>
-
-        <div className="relative z-10 container mx-auto px-6 pt-32">
-          <h1 className="text-5xl md:text-6xl font-bold text-white max-w-3xl">
-            Navigate Smart, Drive Better with Real-time Traffic Solutions
-          </h1>
-          <p className="mt-6 text-xl text-gray-200 max-w-2xl">
-            Get real-time traffic updates, optimal route planning, and smart navigation assistance for a smoother commute.
-          </p>
-          <button className="mt-8 px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          onClick={()=> {
-            navigate('/app')
-          }}
-          >
-            Get Started
-          </button>
-        </div>
-      </header>
-
-      {/* Features Section */}
-      <section id="features" className="py-20 bg-gray-50">
-        <div className="container mx-auto px-6">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-16">
-            Why Choose Traway?
-          </h2>
-          
-          <div className="grid md:grid-cols-3 gap-12">
-            <FeatureCard 
-              icon={<Map className="h-8 w-8 text-blue-600" />}
-              title="Real-time Navigation"
-              description="Get accurate, real-time traffic updates and route optimization"
-            />
-            <FeatureCard 
-              icon={<Clock className="h-8 w-8 text-blue-600" />}
-              title="Time Prediction"
-              description="Accurate arrival time predictions based on current traffic conditions"
-            />
-            <FeatureCard 
-              icon={<Bell className="h-8 w-8 text-blue-600" />}
-              title="Traffic Alerts"
-              description="Instant notifications about accidents, road work, and delays"
-            />
-            <FeatureCard 
-              icon={<BarChart3 className="h-8 w-8 text-blue-600" />}
-              title="Traffic Analytics"
-              description="Detailed traffic patterns and historical data analysis"
-            />
-            <FeatureCard 
-              icon={<Shield className="h-8 w-8 text-blue-600" />}
-              title="Safe Routes"
-              description="Priority routing through safer and well-maintained roads"
-            />
-            <FeatureCard 
-              icon={<Car className="h-8 w-8 text-blue-600" />}
-              title="Vehicle Tracking"
-              description="Keep track of your fleet with advanced vehicle monitoring"
-            />
+          <div>
+            <RecentAlerts />
           </div>
         </div>
-      </section>
 
-      {/* About Us Section */}
-      <section id="about" className="py-20 bg-white">
-        <div className="container mx-auto px-6">
-          <div className="max-w-3xl mx-auto text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">About Traway</h2>
-            <p className="text-lg text-gray-600">
-              Leading the way in smart traffic solutions since 2020, Traway has been committed to making commuting easier and more efficient for everyone.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-12 items-center mb-20">
-            <div>
-              <img
-                src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80"
-                alt="Office team"
-                className="rounded-lg shadow-lg"
-              />
-            </div>
-            <div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">Our Mission</h3>
-              <p className="text-gray-600 mb-6">
-                At Traway, we're on a mission to revolutionize traffic management through innovative technology and data-driven solutions. We believe in creating smarter cities where traffic flows seamlessly and commuters spend less time on the road.
-              </p>
-              <div className="grid grid-cols-2 gap-6">
-                <div className="flex items-center space-x-3">
-                  <Users className="h-6 w-6 text-blue-600" />
-                  <span className="font-semibold">50K+ Users</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <Building2 className="h-6 w-6 text-blue-600" />
-                  <span className="font-semibold">20+ Cities</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <Trophy className="h-6 w-6 text-blue-600" />
-                  <span className="font-semibold">15+ Awards</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <History className="h-6 w-6 text-blue-600" />
-                  <span className="font-semibold">3+ Years</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center p-6">
-              <h4 className="text-xl font-bold text-gray-900 mb-3">Our Vision</h4>
-              <p className="text-gray-600">
-                To create smarter, more connected cities where traffic flows efficiently and sustainably.
-              </p>
-            </div>
-            <div className="text-center p-6">
-              <h4 className="text-xl font-bold text-gray-900 mb-3">Our Values</h4>
-              <p className="text-gray-600">
-                Innovation, reliability, and user-centric solutions drive everything we do.
-              </p>
-            </div>
-            <div className="text-center p-6">
-              <h4 className="text-xl font-bold text-gray-900 mb-3">Our Impact</h4>
-              <p className="text-gray-600">
-                Reducing commute times and environmental impact through smart traffic management.
-              </p>
-            </div>
+        {/* Popular Routes */}
+        <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
+          <h2 className="text-2xl font-semibold text-gray-900 mb-4">Popular Routes</h2>
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead>
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Route
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Distance
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Avg. Time
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Traffic
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                <RouteRow from="Downtown" to="Airport" distance="15 mi" time="25 min" traffic="Moderate" />
+                <RouteRow from="Suburb A" to="City Center" distance="8 mi" time="20 min" traffic="Light" />
+                <RouteRow from="Business Park" to="Shopping Mall" distance="12 mi" time="35 min" traffic="Heavy" />
+              </tbody>
+            </table>
           </div>
         </div>
-      </section>
-
-      {/* Contact Section */}
-      <section id="contact" className="py-20 bg-gray-50">
-        <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-center text-gray-900 mb-16">Get in Touch</h2>
-            
-            <div className="grid md:grid-cols-2 gap-12">
-              <div>
-                <h3 className="text-xl font-semibold mb-6">Contact Information</h3>
-                <div className="space-y-6">
-                  <div className="flex items-start space-x-4">
-                    <MapPin className="h-6 w-6 text-blue-600 mt-1" />
-                    <div>
-                      <h4 className="font-semibold">Address</h4>
-                      <p className="text-gray-600">123 Traffic Way, Tech City, TC 12345</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start space-x-4">
-                    <Phone className="h-6 w-6 text-blue-600 mt-1" />
-                    <div>
-                      <h4 className="font-semibold">Phone</h4>
-                      <p className="text-gray-600">+1 (555) 123-4567</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start space-x-4">
-                    <Mail className="h-6 w-6 text-blue-600 mt-1" />
-                    <div>
-                      <h4 className="font-semibold">Email</h4>
-                      <p className="text-gray-600">contact@traway.com</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                    Name
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    required
-                  />
-                </div>
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    required
-                  />
-                </div>
-                <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
-                    Message
-                  </label>
-                  <textarea
-                    id="message"
-                    value={formData.message}
-                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    rows={4}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    required
-                  ></textarea>
-                </div>
-                <button
-                  type="submit"
-                  className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                >
-                  Send Message
-                </button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 bg-blue-600">
-        <div className="container mx-auto px-6 text-center">
-          <h2 className="text-3xl font-bold text-white mb-8">
-            Ready to Transform Your Daily Commute?
-          </h2>
-          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            Join thousands of satisfied users who have made their journey smoother with Traway.
-          </p>
-          <button className="px-8 py-3 bg-white text-blue-600 rounded-lg hover:bg-gray-100 transition-colors">
-            Download Now
-          </button>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="bg-gray-900 text-gray-300 py-12">
-        <div className="container mx-auto px-6">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center space-x-2 mb-6">
-                <Car className="h-6 w-6" />
-                <span className="text-xl font-bold">Traway</span>
-              </div>
-              <p className="text-sm">
-                Making traffic navigation smarter and easier for everyone.
-              </p>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4">Company</h3>
-              <ul className="space-y-2">
-                <li><a href="#about" className="hover:text-white">About Us</a></li>
-                <li><a href="#careers" className="hover:text-white">Careers</a></li>
-                <li><a href="#press" className="hover:text-white">Press</a></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4">Resources</h3>
-              <ul className="space-y-2">
-                <li><a href="#blog" className="hover:text-white">Blog</a></li>
-                <li><a href="#help" className="hover:text-white">Help Center</a></li>
-                <li><a href="#contact" className="hover:text-white">Contact</a></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4">Legal</h3>
-              <ul className="space-y-2">
-                <li><a href="#privacy" className="hover:text-white">Privacy Policy</a></li>
-                <li><a href="#terms" className="hover:text-white">Terms of Service</a></li>
-                <li><a href="#cookies" className="hover:text-white">Cookie Policy</a></li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-gray-800 mt-12 pt-8 text-sm text-center">
-            © {new Date().getFullYear()} Traway. All rights reserved.
-          </div>
-        </div>
-      </footer>
+      </main>
     </div>
-  );
+  )
 }
 
-function FeatureCard({ icon, title, description }) {
+function StatCard({ icon, title, value, change }) {
+  const isPositive = change >= 0
   return (
-    <div className="p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
-      <div className="mb-4">{icon}</div>
-      <h3 className="text-xl font-semibold text-gray-900 mb-2">{title}</h3>
-      <p className="text-gray-600">{description}</p>
+    <div className="bg-white rounded-2xl shadow-lg p-6 transition-transform duration-300 hover:scale-105">
+      <div className="flex items-center justify-between mb-4">
+        <div className="p-3 rounded-full bg-gray-100">{icon}</div>
+        <div className={`flex items-center ${isPositive ? "text-green-600" : "text-red-600"}`}>
+          {isPositive ? <ArrowUp className="h-4 w-4 mr-1" /> : <ArrowDown className="h-4 w-4 mr-1" />}
+          <span className="text-sm font-medium">{Math.abs(change)}%</span>
+        </div>
+      </div>
+      <h3 className="text-lg font-semibold text-gray-700 mb-1">{title}</h3>
+      <p className="text-2xl font-bold text-gray-900">{value}</p>
     </div>
-  );
+  )
 }
 
-export default App;
+function TrafficOverview() {
+  return (
+    <div className="bg-white rounded-2xl shadow-lg p-6">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-2xl font-semibold text-gray-900">Traffic Overview</h2>
+        <select className="bg-gray-100 rounded-lg px-3 py-1 text-sm text-gray-700 focus:outline-none">
+          <option>Today</option>
+          <option>This Week</option>
+          <option>This Month</option>
+        </select>
+      </div>
+      <div className="h-64 bg-gray-100 rounded-lg flex items-center justify-center">
+        {/* Placeholder for traffic chart */}
+        <BarChart3 className="h-32 w-32 text-gray-400" />
+      </div>
+    </div>
+  )
+}
+
+function RecentAlerts() {
+  return (
+    <div className="bg-white rounded-2xl shadow-lg p-6">
+      <h2 className="text-2xl font-semibold text-gray-900 mb-4">Recent Alerts</h2>
+      <div className="space-y-4">
+        <AlertItem title="Road Closure" description="Main St. closed due to construction" time="2 hours ago" />
+        <AlertItem title="Heavy Traffic" description="Delays on Highway 101 northbound" time="3 hours ago" />
+        <AlertItem title="Accident" description="Multi-vehicle collision on Bridge Ave" time="5 hours ago" />
+      </div>
+    </div>
+  )
+}
+
+function AlertItem({ title, description, time }) {
+  return (
+    <div className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
+      <AlertTriangle className="h-6 w-6 text-yellow-500 mt-1" />
+      <div className="flex-1">
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-medium text-gray-900">{title}</h3>
+          <p className="text-xs text-gray-500">{time}</p>
+        </div>
+        <p className="text-sm text-gray-600 mt-1">{description}</p>
+      </div>
+    </div>
+  )
+}
+
+function RouteRow({ from, to, distance, time, traffic }) {
+  const getTrafficColor = (traffic) => {
+    switch (traffic.toLowerCase()) {
+      case "light":
+        return "text-green-600 bg-green-100"
+      case "moderate":
+        return "text-yellow-600 bg-yellow-100"
+      case "heavy":
+        return "text-red-600 bg-red-100"
+      default:
+        return "text-gray-600 bg-gray-100"
+    }
+  }
+
+  return (
+    <tr>
+      <td className="px-6 py-4 whitespace-nowrap">
+        <div className="text-sm font-medium text-gray-900">{from}</div>
+        <div className="text-sm text-gray-500">to {to}</div>
+      </td>
+      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{distance}</td>
+      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{time}</td>
+      <td className="px-6 py-4 whitespace-nowrap">
+        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getTrafficColor(traffic)}`}>
+          {traffic}
+        </span>
+      </td>
+    </tr>
+  )
+}
+
