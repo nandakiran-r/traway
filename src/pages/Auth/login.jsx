@@ -111,8 +111,8 @@ const SignIn = () => {
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            email: "",
-            password: "",
+            email: "user@gmail.com",
+            password: "password",
         },
     });
     const formRest = useForm({
@@ -163,48 +163,28 @@ const SignIn = () => {
             );
             const user = userCredential.user;
 
-            const idTokenResult = await user.getIdTokenResult();
+            // const idTokenResult = await user.getIdTokenResult();
 
-            const role = idTokenResult.claims.role;
+            // const role = idTokenResult.claims.role;
 
-            // Get the user's role
-            // const userDocRef = doc(collection(db, 'users'), user.uid);
-            // const userDocSnap = await getDoc(userDocRef);
-            // // console.log('userDocSnap', userDocSnap.data());
-            // const role = userDocSnap.data()?.role;
-            // localStorage.setItem('ID', user.uid);
 
             // Verify the user's role
-            if (role === "admin") {
-                // Grant access to admin features
-                // console.log('Admin signed in:', user);
-                toast({
-                    variant: "destructive",
-                    title: "User login session",
-                    description: "Admin can only login to admin dashboard",
-                });
-                await signOut(auth);
-                navigate("/admin/login");
-            } else if (role === "user") {
-                // Grant access to user features
-                // console.log('User signed in:', user);
+            if (user) {
                 toast({
                     variant: "success",
                     title: "Signed in",
                     description: "You have successfully signed in",
                     duration: 2000,
                 });
-                navigate("/");
+                navigate("/app");
             } else {
-                // Handle unknown role
-                // console.error('Unknown role:', user);
+
                 toast({
                     variant: "destructive",
                     title: "Error",
-                    description: "Unknown role",
-                    duration: 2000,
+                    description: "User login session is invalid",
                 });
-                navigate("/contact");
+                await signOut(auth);
             }
         } catch (error) {
             console.error("Error signing in:", error);
@@ -219,11 +199,6 @@ const SignIn = () => {
         }
     }
 
-    const handleFilldata = () => {
-        form.setValue("email", "user@gmail.com");
-        form.setValue("password", "password");
-    };
-
     const handleResetForm = () => {
         setRestForm(!restForm);
     };
@@ -234,7 +209,7 @@ const SignIn = () => {
                 <div className="left"></div>
                 <div className="log-in">
                     <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="">
                             <h4>
                                 Welcome to <br /> <span className="brand">TraWay</span>
                             </h4>
