@@ -125,6 +125,18 @@ function HighwayStatus() {
           vehicles={{ cars: 120, trucks: 15, rideshare: 28 }}
           avgSpeed="65mph"
         />
+        <HighwayStatusItem
+          highway="880"
+          status="light"
+          vehicles={{ cars: 120, trucks: 15, rideshare: 28 }}
+          avgSpeed="65mph"
+        />
+        <HighwayStatusItem
+          highway="880"
+          status="light"
+          vehicles={{ cars: 120, trucks: 15, rideshare: 28 }}
+          avgSpeed="65mph"
+        />
       </div>
     </div>
   )
@@ -216,7 +228,7 @@ function ActivePetitions({ setShowForm }) {
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6 ">
       <h2 className="text-2xl font-semibold text-gray-900 mb-4">Active Petitions</h2>
-      <div className="max-h-[600px] overflow-auto">
+      <div className="max-h-[410px] overflow-auto">
         <div className="space-y-4">
           {loading ? (
             <p>Loading...</p>
