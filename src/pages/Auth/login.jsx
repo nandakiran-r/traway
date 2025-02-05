@@ -303,7 +303,7 @@ const SignIn = ({ open, onClose }) => {
                                         )}
                                     />
                                     <div style={{ display: "flex", alignItems: "center", justifyContent: 'space-between', width: '100%', flexDirection: 'row' }}>
-                                        <a style={{ textDecoration: "none", color: "blueviolet", marginLeft: 40 }} href="/register">Register</a>
+                                        <a style={{ textDecoration: "none", color: "blueviolet", marginLeft: 40 }} href="/singup">Register</a>
                                         <LoadingButton
                                             className="mt-6 w-full bg-emerald-600 font-bold !text-white transition-all ease-in-out hover:bg-emerald-700"
                                             loading={loading}
