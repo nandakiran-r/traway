@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Car, Map, Clock, Bell, BarChart3, Shield, Phone, Mail, MapPin, Users, Building2, Trophy, History } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import logo from '@/assets/logo.png';
+import bg from '@/assets/bg.webp';
+
 
 function Home() {
   const [formData, setFormData] = useState({
@@ -24,7 +26,7 @@ function Home() {
       <header id="home" className="relative h-[600px]">
         <div className="absolute inset-0">
           <img
-            src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&q=80"
+            src={bg}
             alt="Traffic background"
             className="w-full h-full object-cover"
           />
@@ -34,7 +36,7 @@ function Home() {
         <nav className="relative z-10 container mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <img src={logo} alt="Traway" className="h-8 w-8" />
+              <img src={logo} alt="Traway" style={{filter: "brightness(100000%)"}} className="h-8 w-8" />
               {/* <Car className="h-8 w-8 text-white" /> */}
               <span className="text-2xl font-bold text-white">Traway</span>
             </div>
@@ -49,10 +51,10 @@ function Home() {
 
         <div className="relative z-10 container mx-auto px-6 pt-32">
           <h1 className="text-5xl md:text-6xl font-bold text-white max-w-3xl">
-            Navigate Smart, Drive Better with Real-time Traffic Solutions
+           Your Trusted Companion for Safer, Smarter Highway Travel.
           </h1>
           <p className="mt-6 text-xl text-gray-200 max-w-2xl">
-            Get real-time traffic updates, optimal route planning, and smart navigation assistance for a smoother commute.
+            
           </p>
           <button className="mt-8 px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           onClick={()=> {
@@ -118,7 +120,7 @@ function Home() {
           <div className="grid md:grid-cols-2 gap-12 items-center mb-20">
             <div>
               <img
-                src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80"
+                src="https://thumbs.dreamstime.com/b/business-person-car-travel-green-screen-navigation-system-hand-pointing-to-map-mockup-traffic-app-web-help-work-336184576.jpg"
                 alt="Office team"
                 className="rounded-lg shadow-lg"
               />
@@ -167,6 +169,21 @@ function Home() {
           </div>
         </div>
       </section>
+
+{/* CTA Section */}
+<section className="py-20 bg-blue-900">
+  <div className="container mx-auto px-6 text-center">
+    <h2 className="text-3xl font-bold text-white mb-8">
+      Ready to Transform Your Daily Journey?
+    </h2>
+    <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+      Join thousands of satisfied users who have made their journey smoother with Traway.
+    </p>
+    <button className="px-8 py-3 bg-white text-blue-600 rounded-lg hover:bg-gray-100 transition-colors">
+      Download Now
+    </button>
+  </div>
+</section>
 
       {/* Contact Section */}
       <section id="contact" className="py-20 bg-gray-50">
@@ -251,21 +268,6 @@ function Home() {
               </form>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 bg-blue-700">
-        <div className="container mx-auto px-6 text-center">
-          <h2 className="text-3xl font-bold text-white mb-8">
-            Ready to Transform Your Daily Journey?
-          </h2>
-          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            Join thousands of satisfied users who have made their journey smoother with Traway.
-          </p>
-          <button className="px-8 py-3 bg-white text-blue-600 rounded-lg hover:bg-gray-100 transition-colors">
-            Download Now
-          </button>
         </div>
       </section>
 
