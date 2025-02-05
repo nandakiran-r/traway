@@ -13,7 +13,7 @@ import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 // import { collection, doc, getDoc } from 'firebase/firestore';
 import { useToast } from "@/components/ui/use-toast";
-
+import { useLocation } from "react-router-dom";
 import '@/assets/styles/login.css';
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -32,14 +32,12 @@ import {
     DialogContent,
     DialogDescription,
     DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-
+    DialogTitle
 } from "@/components/ui/dialog2";
 import { LoadingButton } from "@/components/ui/loading-button";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { useModel } from '@/hooks/useModel'
-import { Plus, Pencil } from "lucide-react";
+import { useUser } from '@/context/UserContext'
 
 
 const formSchema = z.object({
@@ -57,7 +55,7 @@ const formSchemaRest = z.object({
     }),
 });
 
-const SignIn = () => {
+const SignIn = ({ open, onClose }) => {
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
     const { isOpen, openModal, closeModal: handleCloseModal } = useModel()
@@ -68,29 +66,36 @@ const SignIn = () => {
     const [restForm, setRestForm] = useState(false);
     const [message, setMessage] = useState("");
     const [parent] = useAutoAnimate();
+    const location = useLocation();
+    const { user, handleSignOut } = useUser();
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                const idTokenResult = await user.getIdTokenResult();
-                const role = idTokenResult.claims.role;
-                if (isNewUser) {
-                    setIsNewUser(false);
-                } else {
-                    if (
-                        form.getValues("email") === "" &&
-                        form.getValues("password") === ""
-                    ) {
-                        toast({
-                            title: "Already signed in",
-                            description: "You are already signed in",
-                        });
-                    }
-                }
-            }
-        });
-        return () => unsubscribe();
-    }, [isNewUser]);
+        if (open) {
+            openModal();
+        } else {
+            handleCloseModal();
+        }
+    }, [open]);
+
+
+    useEffect(() => {
+        if (location.state?.openModal) {
+            openModal();
+            navigate(location.pathname, { replace: true }); // Remove state after opening modal
+        }
+    }, [location]);
+
+    useEffect(() => {
+        if (user) {
+            navigate("/app");
+            toast({
+                variant: "success",
+                title: "Signed in",
+                description: "You have Already signed in",
+                duration: 2000,
+            });
+        }
+    }, [user]);
 
     const toggleShowPassword = () => {
         setShowPassword(!showPassword);
@@ -103,12 +108,7 @@ const SignIn = () => {
             password: "password",
         },
     });
-    // const formRest = useForm({
-    //     resolver: zodResolver(formSchemaRest),
-    //     defaultValues: {
-    //         email: "",
-    //     },
-    // });
+
 
     // async function onSubmitReset(values) {
     //     try {
@@ -189,13 +189,17 @@ const SignIn = () => {
         setRestForm(!restForm);
     };
 
+
+
     return (
-        <Dialog open={isOpen} onOpenChange={(open) => (open ? openModal() : handleCloseModal())}>
-            <DialogTrigger asChild>
-                <Button>
-                    Login
-                </Button>
-            </DialogTrigger>
+        <Dialog open={isOpen} onOpenChange={(isOpen) => {
+            if (!isOpen) {
+                onClose(); 
+            }
+        }}>
+            <DialogTitle>
+
+            </DialogTitle>
             <DialogContent>
                 <div className="login p-10">
                     <div className="session">

@@ -1,8 +1,17 @@
+import { X } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { doc, setDoc, Timestamp } from "firebase/firestore";
+import { db } from "@/config/firebase";
+import { useUser } from "@/context/UserContext";
+import { useToast } from "@/components/ui/use-toast";
+
 
 function PetitionForm({ onClose }) {
     const { user } = useUser();
     const [loading, setLoading] = useState(false);
-  
+    const toast = useToast();
+    
     const {
       register,
       handleSubmit,
@@ -131,3 +140,5 @@ function PetitionForm({ onClose }) {
     );
   }
   
+
+export default PetitionForm;

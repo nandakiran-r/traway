@@ -1,16 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { Car, Home, ScrollText, AlertCircle, Users, Shield, Settings, LogOut, Menu, X, Bell, Search, FileText } from "lucide-react";
-// import PetitionHub from "@/components/PetitionHub";
-// import IncidentReports from "@/components/IncidentReports";
-// import TravelTogether from "@/components/TravelTogether";
-// import SafetyAlerts from "@/components/SafetyAlerts";
-// import SettingsSection from "@/components/SettingsSection";
-// import PetitionForm from "@/components/PetitionForm";
-// import AlertForm from "@/components/AlertForm";
-// import TravelForm from "@/components/TravelForm";
-
-import { PetitionHub, TravelTogether } from "@/pages/App";
+import { useUser } from '@/context/UserContext'
+import SignIn from "@/pages/Auth/login";
 
 function AppLayout() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -20,6 +12,16 @@ function AppLayout() {
     const [showTravelForm, setShowTravelForm] = useState(false);
     const navigate = useNavigate();
     const pathname = window.location.pathname;
+    const { user, handleSignOut } = useUser();
+    const [isLoginOpen, setIsLoginOpen] = useState(false);
+
+    const handleOpenLogin = () => {
+        setIsLoginOpen(true);
+    };
+    
+    const handleCloseLogin = () => {
+        setIsLoginOpen(false);
+    };
 
     useEffect(() => {
         if (pathname.includes("petitions")) {
@@ -43,7 +45,6 @@ function AppLayout() {
 
 
     const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
-    const handleSignOut = () => console.log("Signing out...");
 
     const handleClick = (tab) => {
         setActiveTab(tab);
@@ -89,21 +90,24 @@ function AppLayout() {
                 </nav>
 
                 {/* Log Out Button */}
-                <div className="mt-auto px-4 pb-4">
-                    <button
-                        className="flex items-center space-x-3 px-4 py-3 rounded-lg w-full text-gray-700 hover:bg-gray-100"
-                        onClick={handleSignOut}
-                    >
-                        <LogOut />
-                        {isSidebarOpen && <span>Log Out</span>}
-                    </button>
-                </div>
-            </aside>
+                {user && (
+                    < div className="mt-auto px-4 pb-4">
+                        <button
+                            className="flex items-center space-x-3 px-4 py-3 rounded-lg w-full text-gray-700 hover:bg-gray-100"
+                            onClick={handleSignOut}
+                        >
+                            <LogOut />
+                            {isSidebarOpen && <span>Log Out</span>}
+                        </button>
+                    </div>
+                )
+                }
+            </aside >
 
             {/* Main Content */}
-            <div className={`flex-1 transition-all duration-300 ${isSidebarOpen ? "sm:ml-64" : "sm:ml-20"}`}>
+            < div className={`flex-1 transition-all duration-300 ${isSidebarOpen ? "sm:ml-64" : "sm:ml-20"}`}>
                 {/* Top Navigation */}
-                <nav className="bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg shadow-lg p-4">
+                < nav className="bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg shadow-lg p-4 select-none" >
                     <div className="flex items-center justify-between max-w-7xl mx-auto">
                         <div />
                         <div className="relative border rounded-full border-gray-300 max-w-[400px] w-full">
@@ -118,25 +122,38 @@ function AppLayout() {
                             <button className="p-2 rounded-full text-gray-600 hover:bg-white hover:bg-opacity-25 focus:outline-none">
                                 <Bell className="h-6 w-6" />
                             </button>
-                            <div className="h-8 w-8 rounded-full bg-blue-500 text-white flex items-center justify-center">
-                                JD
-                            </div>
+                            {user && (
+                                <div className="h-8 w-8 rounded-full bg-blue-500 px-2 text-white flex items-center justify-center">
+                                    JD
+                                </div>
+                            )}
+                            {!user && (
+                                <button
+                                    onClick={handleOpenLogin}
+                                    className="flex items-center text-white space-x-3 px-4 py-1.5 rounded-lg w-full hover:text-gray-700 bg-blue-400 hover:bg-gray-200 cursor-pointer"
+                                >
+                                    <span>Login</span>
+                                </button>
+                            )
+                            }
                         </div>
                     </div>
-                </nav>
+                </nav >
 
                 {/* Main Dashboard Content */}
-                <main className="p-8">
+                < main className="p-8" >
                     <Outlet />
-                </main>
+                </main >
 
                 {/* Modals for Forms */}
-                {showPetitionForm && <PetitionForm onClose={() => setShowPetitionForm(false)} />}
-                {showAlertForm && <AlertForm onClose={() => setShowAlertForm(false)} />}
-                {showTravelForm && <TravelForm onClose={() => setShowTravelForm(false)} />}
+                {/* {showPetitionForm && <PetitionForm onClose={() => setShowPetitionForm(false)} />} */}
+                {/* {showAlertForm && <AlertForm onClose={() => setShowAlertForm(false)} />} */}
+                {/* {showTravelForm && <TravelForm onClose={() => setShowTravelForm(false)} />} */}
 
-            </div>
-        </div>
+
+                <SignIn open={isLoginOpen} onClose={handleCloseLogin} />
+            </div >
+        </div >
     );
 }
 
