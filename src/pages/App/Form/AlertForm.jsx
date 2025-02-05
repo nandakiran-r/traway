@@ -1,3 +1,7 @@
+import { X, MapPin, Mic } from 'lucide-react';
+import { useState } from 'react';
+
+
 function AlertForm({ onClose }) {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -69,3 +73,5 @@ function AlertForm({ onClose }) {
       </div>
     );
   }
+
+  export default AlertForm;

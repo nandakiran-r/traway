@@ -1,4 +1,4 @@
-import { Car, Map, BarChart3, AlertTriangle, Settings, Bell, Search, ArrowUp, ArrowDown, Store, File as Toilet, FileText, Truck, CarTaxiFront, Home, ScrollText, AlertCircle, Users, Shield, Menu, X, Upload, MessageCircle, Mic, MapPin, ChevronRight, Filter, Phone, LogOut } from "lucide-react";
+import { Car, Map, BarChart3, AlertTriangle, Settings, Bell, Search, ArrowUp, ArrowDown, Store,  Toilet, FileText, Truck, CarTaxiFront, Home, ScrollText, AlertCircle, Users, Shield, Menu, X, Upload, MessageCircle, Mic, MapPin, ChevronRight, Filter, Phone, LogOut } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useUser } from '@/context/UserContext'
@@ -38,16 +38,16 @@ export default function App() {
     <div className="min-h-screen bg-gradient-to-br from-blue-100 to-indigo-100">
 
 
-        {/* Main Dashboard Content */}
-        <main className="p-8">
-          {activeTab === "home" && <DashboardContent />}
-          {/* {activeTab === "petitions" && <PetitionHub setShowForm={setShowPetitionForm} />}
+      {/* Main Dashboard Content */}
+      <main className="p-8">
+        {activeTab === "home" && <DashboardContent />}
+        {/* {activeTab === "petitions" && <PetitionHub setShowForm={setShowPetitionForm} />}
           {activeTab === "incidents" && <IncidentReports setShowForm={setShowAlertForm} />}
           {activeTab === "travel" && <TravelTogether setShowForm={setShowTravelForm} />}
           {activeTab === "safety" && <SafetyAlerts />}
           {activeTab === "settings" && <SettingsSection />} */}
-        </main>
-      </div>
+      </main>
+    </div>
 
   );
 }
@@ -198,7 +198,7 @@ function ActivePetitions({ setShowForm }) {
 
   const handleClick = () => {
     if (!user) {
-     alert("please log in!")
+      alert("please log in!")
     } else {
       navigate()
     }
@@ -214,27 +214,28 @@ function ActivePetitions({ setShowForm }) {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-6">
+    <div className="bg-white rounded-2xl shadow-lg p-6 ">
       <h2 className="text-2xl font-semibold text-gray-900 mb-4">Active Petitions</h2>
-      <div className="space-y-4">
-        {loading ? (
-          <p>Loading...</p>
-        ) : petitions.length > 0 ? (
-          petitions.map((petition) => (
-            <PetitionItem
-              key={petition.id}
-              title={petition.title}
-              location={petition.place}
-              signatures={petition.signatures}
-              goal={petition.goal}
-              daysLeft={calculateDaysLeft(petition.createdAt)}
-            />
-          ))
-        ) : (
-          <p>No active petitions at the moment.</p>
-        )}
+      <div className="max-h-[600px] overflow-auto">
+        <div className="space-y-4">
+          {loading ? (
+            <p>Loading...</p>
+          ) : petitions.length > 0 ? (
+            petitions.map((petition) => (
+              <PetitionItem
+                key={petition.id}
+                title={petition.title}
+                location={petition.place}
+                signatures={petition.signatures}
+                goal={petition.goal}
+                daysLeft={calculateDaysLeft(petition.createdAt)}
+              />
+            ))
+          ) : (
+            <p>No active petitions at the moment.</p>
+          )}
+        </div>
       </div>
-
       <Button className="w-full mt-4 text-white cursor-pointer" variant="outline" onClick={() => handleClick()}>
         <FileText className="w-4 h-4 mr-2 text-white" />
         Start New Petition
@@ -328,7 +329,7 @@ function ShopItem({ name, oldLocation, newLocation, date, category }) {
 function GenderNeutralBathrooms() {
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6">
-      <h2 className="text-2xl font-semibold text-gray-900 mb-4">Gender Neutral Bathrooms</h2>
+      <h2 className="text-2xl font-semibold text-gray-900 mb-4">Restroom Finder</h2>
       <div className="space-y-4">
         <BathroomItem
           location="City Mall - 1st Floor"
@@ -358,7 +359,7 @@ function BathroomItem({ location, amenities, status, distance }) {
 
   return (
     <div className="flex items-start space-x-4 p-4 bg-gray-50 rounded-lg">
-      <Toilet className="h-6 w-6 text-green-600 mt-1" />
+      <Toilet  className="h-6 w-6 text-green-600 mt-1" />
       <div className="flex-1">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-medium text-gray-900">{location}</h3>

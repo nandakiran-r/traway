@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { FileText } from "lucide-react";
-import { collection, getDocs, query, orderBy, limit } from "firebase/firestore";
+import { collection, getDocs, query, orderBy, limit, doc, updateDoc,arrayUnion } from "firebase/firestore";
 import { db } from "@/config/firebase";
 import { useUser } from '@/context/UserContext'
 import SignIn from "@/pages/Auth/login";
@@ -35,12 +35,40 @@ function PetitionItem({ title, location, signatures, goal, daysLeft }) {
   )
 }
 
-function PetitionItemTrending({ id, title, location, signatures, goal, daysLeft }) {
+function PetitionItemTrending({ id, title, location, signatures, goal, daysLeft, signedusers }) {
   const progress = (signatures / goal) * 100;
+  const { user } = useUser(); 
 
-  const handleSignClick = (id) => {
-    console.log("Sign petition with ID:", id);
-  }
+  useEffect(() => {
+    if (user && signedusers?.includes(user.uid)) {
+      console.log("User has already signed this petition");
+    }
+  }, [signedusers, user?.uid]); 
+
+  const handleSignClick = async () => {
+    if (!user) {
+      console.error("User must be logged in to sign the petition.");
+      return;
+    }
+
+    if (signedusers?.includes(user.uid)) {
+      console.log("User has already signed.");
+      return;
+    }
+
+    try {
+      const petitionDocRef = doc(db, "petitions", id);
+
+      await updateDoc(petitionDocRef, {
+        signatures: signatures + 1,
+        signedusers: arrayUnion(user.uid), // Firebase ensures unique values
+      });
+
+      console.log("Petition signed successfully!");
+    } catch (error) {
+      console.error("Error signing petition:", error);
+    }
+  };
 
   return (
     <div className="p-4 bg-gray-50 rounded-lg">
