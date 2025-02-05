@@ -10,7 +10,8 @@ import { useToast } from "@/components/ui/use-toast";
 function PetitionForm({ onClose }) {
     const { user } = useUser();
     const [loading, setLoading] = useState(false);
-    const toast = useToast();
+    const { toast } = useToast();
+    
     const {
       register,
       handleSubmit,
