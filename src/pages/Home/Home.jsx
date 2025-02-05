@@ -24,7 +24,7 @@ function Home() {
       <header id="home" className="relative h-[600px]">
         <div className="absolute inset-0">
           <img
-            src="https://img.freepik.com/premium-photo/traffic-highway-with-sunset-view_693425-6854.https://imgcdn.stablediffusionweb.com/2024/4/12/a01d443d-af6a-464a-8002-85a2236a5615.jpg?w=1060"
+            src="https://imgcdn.stablediffusionweb.com/2024/4/12/a01d443d-af6a-464a-8002-85a2236a5615.jpg"
             alt="Traffic background"
             className="w-full h-full object-cover"
           />
