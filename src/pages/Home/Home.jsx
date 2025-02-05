@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Car, Map, Clock, Bell, BarChart3, Shield, Phone, Mail, MapPin, Users, Building2, Trophy, History } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import logo from '@/assets/logo.png';
-import bg from '@/assets/bg.jpg';
+import bg from '@/assets/bg.webp';
 
 
 function Home() {
