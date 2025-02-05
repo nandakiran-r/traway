@@ -10,7 +10,7 @@ function IncidentItem({ type, icon, title, location, description, time, severity
     medium: "border-yellow-500",
     low: "border-blue-500"
   }
-  
+
 
   return (
     <div className={`flex items-start space-x-4 p-4 bg-gray-50 rounded-lg border-l-4 ${severityColors[severity]}`}>
@@ -32,7 +32,6 @@ function IncidentReports() {
   const { user } = useUser(); // Get logged-in user
   const [showForm, setShowForm] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
-
   const handleOpenLogin = () => {
     setIsLoginOpen(true);
   };

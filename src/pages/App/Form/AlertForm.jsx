@@ -1,17 +1,29 @@
 import { X, MapPin, Mic } from 'lucide-react';
 import { useState } from 'react';
 import { useUser } from '@/context/UserContext';
+import { useToast } from "@/components/ui/use-toast";
+
 function AlertForm({ onClose }) {
   const [location, setLocation] = useState('');
   const [type, setType] = useState('Traffic Accident');
   const [description, setDescription] = useState('');
+  const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
   const user = useUser();
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true)
     const recipientEmail = user?.email;
     const reportData = { location, type, description, recipientEmail };
     const apiKey = import.meta.env.VITE_BASE_URL;
-
+    if (location === '' || description === '') {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please fill in all fields.",
+      });
+      return;
+    }
     try {
       const response = await fetch(`${apiKey}/api/send-report`, {
         method: 'POST',
@@ -20,13 +32,19 @@ function AlertForm({ onClose }) {
       });
 
       if (response.ok) {
-        alert("Report sent to authorities!");
+        toast({
+          variant: "success",
+          title: "Report sent",
+          description: "Thank you for reporting the incident.",
+        });
         onClose();
       } else {
         alert("Failed to send report.");
       }
     } catch (error) {
       console.error("Error reporting incident:", error);
+    } finally{
+      setLoading(false);
     }
   };
 
@@ -90,9 +108,10 @@ function AlertForm({ onClose }) {
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+              disabled={loading}
+              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:bg-red-700/50"
             >
-              Report Emergency
+             {loading ? 'Sending...' : ' Report Emergency'}
             </button>
           </div>
         </form>
