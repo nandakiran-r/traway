@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useUser } from '@/context/UserContext';
 import SignIn from "@/pages/Auth/login";
 import { OlaMaps } from '../../OlaMapsWebSDKNew/index';
+import { collection, getDocs, addDoc, serverTimestamp } from "firebase/firestore";
+import { db } from "@/config/firebase";
 
 // Restroom Location Form Component
 function AddRestroomForm({ onClose, onAddRestroom }) {
@@ -39,32 +41,8 @@ function AddRestroomForm({ onClose, onAddRestroom }) {
 
     // Fetch geocode for the selected suggestion
     const geocodeData = await fetchGeocode(suggestion.description);
-    
     const { lat, lng } = geocodeData.geocodingResults[0].geometry.location;
-    
     setCoordinates([lat, lng]);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (!coordinates) {
-      alert("Please select a valid location from the suggestions.");
-      return;
-    }
-
-    const newRestroom = {
-      id: Date.now(),
-      name: formData.name,
-      position: coordinates, // Use the fetched latitude and longitude
-      hygiene: parseInt(formData.hygieneRating),
-      rating: parseFloat(formData.overallRating),
-      description: formData.description,
-    };
-
-    onAddRestroom(newRestroom);
-    alert("Restroom location added successfully!");
-    onClose();
   };
 
   const fetchAutocompleteSuggestions = async (input) => {
@@ -74,7 +52,7 @@ function AddRestroomForm({ onClose, onAddRestroom }) {
         {
           method: "GET",
           headers: {
-            "X-Request-Id": "XXX", // Replace with a unique request ID if needed
+            "X-Request-Id": "XXX",
           },
         }
       );
@@ -82,7 +60,7 @@ function AddRestroomForm({ onClose, onAddRestroom }) {
       return data;
     } catch (error) {
       console.error("Error fetching autocomplete suggestions:", error);
-      throw error;
+      return { predictions: [] };
     }
   };
 
@@ -93,7 +71,7 @@ function AddRestroomForm({ onClose, onAddRestroom }) {
         {
           method: "GET",
           headers: {
-            "X-Request-Id": "XXX", // Replace with a unique request ID if needed
+            "X-Request-Id": "XXX",
           },
         }
       );
@@ -102,6 +80,35 @@ function AddRestroomForm({ onClose, onAddRestroom }) {
     } catch (error) {
       console.error("Error fetching geocode:", error);
       throw error;
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!coordinates) {
+      alert("Please select a valid location from the suggestions.");
+      return;
+    }
+
+    const newRestroom = {
+      name: formData.name,
+      location: formData.location,
+      latitude: coordinates[0],
+      longitude: coordinates[1],
+      hygieneRating: parseInt(formData.hygieneRating),
+      overallRating: parseFloat(formData.overallRating),
+      description: formData.description,
+      timestamp: serverTimestamp(),
+    };
+
+    try {
+      await onAddRestroom(newRestroom);
+      alert("Restroom location added successfully!");
+      onClose();
+    } catch (error) {
+      console.error("Error adding restroom:", error);
+      alert("Error adding restroom. Please try again.");
     }
   };
 
@@ -124,7 +131,7 @@ function AddRestroomForm({ onClose, onAddRestroom }) {
             />
           </div>
 
-          {/* Location Field with Autocomplete Dropdown */}
+          {/* Location Field with Autocomplete */}
           <div className="mb-4 relative">
             <label className="block text-sm font-medium text-gray-700">Location</label>
             <input
@@ -132,13 +139,12 @@ function AddRestroomForm({ onClose, onAddRestroom }) {
               name="location"
               value={formData.location}
               onChange={handleChange}
-              placeholder="Enter location (e.g., City, Street)"
+              placeholder="Enter location"
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               required
             />
-            {console.log(suggestions)}
             {suggestions.length > 0 && (
-              <ul className="w-full bg-white border border-gray-300 rounded-md mt-1 max-h-40 overflow-y-auto shadow-lg">
+              <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-40 overflow-y-auto shadow-lg">
                 {suggestions.map((suggestion, index) => (
                   <li
                     key={index}
@@ -217,14 +223,85 @@ function AddRestroomForm({ onClose, onAddRestroom }) {
   );
 }
 
-// Restroom Finder Page Component
+// Main Restrooms Component
 export default function Restrooms() {
   const { user } = useUser();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  const [restrooms, setRestrooms] = useState([
-    
-  ]);
+  const [restrooms, setRestrooms] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [mapInstance, setMapInstance] = useState(null);
+  const [olaMapsInstance, setOlaMapsInstance] = useState(null);
+
+  useEffect(() => {
+    // Initialize OlaMaps
+    const olaMaps = new OlaMaps({
+      apiKey: import.meta.env.VITE_OLA_MAP_API_KEY,
+    });
+    setOlaMapsInstance(olaMaps);
+
+    const myMap = olaMaps.init({
+      style: "https://api.olamaps.io/tiles/vector/v1/styles/default-light-standard/style.json",
+      container: 'map',
+      center: [75.9952, 11.3214],
+      zoom: 10,
+    });
+    setMapInstance(myMap);
+
+    const geolocate = olaMaps.addGeolocateControls({
+      positionOptions: {
+        enableHighAccuracy: true,
+      },
+      trackUserLocation: true,
+    });
+
+    myMap.addControl(geolocate);
+    myMap.on('load', () => {
+      geolocate.trigger();
+      // We'll add markers in a separate useEffect
+    });
+
+    return () => {
+      // Cleanup map instance if needed
+      if (myMap) {
+        myMap.remove();
+      }
+    };
+  }, []);
+
+  // Fetch restrooms and add markers
+  useEffect(() => {
+    const fetchRestrooms = async () => {
+      setLoading(true);
+      try {
+        const restroomsRef = collection(db, "restrooms");
+        const snapshot = await getDocs(restroomsRef);
+        const restroomData = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setRestrooms(restroomData);
+        
+        // Add markers if map is ready
+        if (mapInstance && olaMapsInstance && restroomData.length > 0) {
+          restroomData.forEach(restroom => {
+            if (restroom.latitude && restroom.longitude) {
+              olaMapsInstance
+                .addMarker({ color: 'red' })
+                .setLngLat([restroom.longitude, restroom.latitude])
+                .addTo(mapInstance);
+            }
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching restrooms:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRestrooms();
+  }, [mapInstance, olaMapsInstance]);
 
   const handleAddRestroom = () => {
     if (user) {
@@ -234,39 +311,26 @@ export default function Restrooms() {
     }
   };
 
-  const addNewRestroom = (newRestroom) => {
-    setRestrooms((prevRestrooms) => [...prevRestrooms, newRestroom]); // Append the new restroom to the list
+  const addNewRestroom = async (newRestroom) => {
+    try {
+      const docRef = await addDoc(collection(db, "restrooms"), newRestroom);
+      const restroomWithId = { id: docRef.id, ...newRestroom };
+      setRestrooms(prev => [...prev, restroomWithId]);
+
+      // Add marker for new restroom
+      if (mapInstance && olaMapsInstance) {
+        olaMapsInstance
+          .addMarker({ color: 'red' })
+          .setLngLat([newRestroom.longitude, newRestroom.latitude])
+          .addTo(mapInstance);
+      }
+
+      return docRef;
+    } catch (error) {
+      console.error("Error adding restroom:", error);
+      throw error;
+    }
   };
-
-  const olaMaps = new OlaMaps({
-    apiKey: import.meta.env.VITE_OLA_MAP_API_KEY,
-  });
-
-  const [lat, setLat] = useState(75.9952);
-  const [long, setLong] = useState(11.3214);
-
-  useEffect(() => {
-    const myMap = olaMaps.init({
-      style: "https://api.olamaps.io/tiles/vector/v1/styles/default-light-standard/style.json",
-      container: 'map',
-      center: [lat, long],
-      zoom: 10,
-    });
-    const geolocate = olaMaps.addGeolocateControls({
-      positionOptions: {
-        enableHighAccuracy: true,
-      },
-      trackUserLocation: true,
-    });
-    myMap.addControl(geolocate);
-    myMap.on('load', () => {
-      geolocate.trigger();
-      olaMaps
-        .addMarker({ color: 'red' })
-        .setLngLat([lat, long])
-        .addTo(myMap);
-    });
-  }, []);
 
   return (
     <div className="space-y-6 p-6">
@@ -276,6 +340,16 @@ export default function Restrooms() {
         {showLoginModal && <SignIn onClose={() => setShowLoginModal(false)} />}
       </div>
 
+{/* Add Restroom Button */}
+<div className="flex justify-end">
+  <button
+    onClick={handleAddRestroom}
+    className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition duration-200"
+  >
+    Add New Restroom Location
+  </button>
+</div>
+
       {/* Map Section */}
       <div className="bg-white rounded-xl shadow-lg p-6">
         <h2 className="text-lg font-semibold mb-4">Find Restrooms Near You</h2>
@@ -284,21 +358,37 @@ export default function Restrooms() {
         </div>
       </div>
 
-      {/* Add Restroom Button */}
-      <div className="flex justify-end">
-        <button
-          onClick={handleAddRestroom}
-          className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition duration-200"
-        >
-          Add New Restroom Location
-        </button>
+      {/* Restrooms List */}
+      <div className="bg-white rounded-xl shadow-lg p-6">
+        <h2 className="text-lg font-semibold mb-4">Available Restrooms</h2>
+        {loading ? (
+          <p className="text-gray-500">Loading...</p>
+        ) : restrooms.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {restrooms.map((restroom) => (
+              <div key={restroom.id} className="p-4 border rounded-lg">
+                <h3 className="font-medium">{restroom.name}</h3>
+                <p className="text-sm text-gray-600">{restroom.location}</p>
+                <div className="mt-2">
+                  <p>Hygiene: {restroom.hygieneRating}/5</p>
+                  <p>Overall: {restroom.overallRating}/5</p>
+                </div>
+                {restroom.description && (
+                  <p className="mt-2 text-sm text-gray-600">{restroom.description}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-gray-500">No restrooms available yet.</p>
+        )}
       </div>
 
       {/* Add Restroom Form Modal */}
       {showForm && (
         <AddRestroomForm
           onClose={() => setShowForm(false)}
-          onAddRestroom={addNewRestroom} // Pass the function to update the restroom list
+          onAddRestroom={addNewRestroom}
         />
       )}
     </div>
