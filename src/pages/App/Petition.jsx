@@ -42,7 +42,7 @@ function PetitionHub() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
-
+  
   const handleOpenLogin = () => {
     setIsLoginOpen(true);
   };
