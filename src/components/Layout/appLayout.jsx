@@ -3,6 +3,7 @@ import { Link, Outlet, useNavigate } from "react-router-dom";
 import { Car, Home, ScrollText, AlertCircle, Users, Settings, LogOut, Menu, X, Bell, Search, FileText, BookUser, TriangleAlert } from "lucide-react";
 import { useUser } from '@/context/UserContext'
 import SignIn from "@/pages/Auth/login";
+import logo from '@/assets/logo.png';
 
 function AppLayout() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -62,7 +63,8 @@ function AppLayout() {
             >
                 <div className="flex items-center justify-between p-4">
                     <div className="flex items-center space-x-3">
-                        <Car className="h-8 w-8 text-blue-600" />
+                        {/* <Car className="h-8 w-8 text-blue-600" /> */}
+                        <img src={logo} alt="logo" className="h-8 w-8" />
                         {isSidebarOpen && <span className="text-xl font-bold">Traway</span>}
                     </div>
                     <button onClick={toggleSidebar} className="p-2 rounded-lg hover:bg-gray-100">
