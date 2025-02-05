@@ -24,7 +24,7 @@ function Home() {
       <header id="home" className="relative h-[600px]">
         <div className="absolute inset-0">
           <img
-            src="https://img.freepik.com/premium-photo/traffic-highway-with-sunset-view_693425-6854.jpg?w=1060"
+            src="https://img.freepik.com/premium-photo/traffic-highway-with-sunset-view_693425-6854.https://imgcdn.stablediffusionweb.com/2024/4/12/a01d443d-af6a-464a-8002-85a2236a5615.jpg?w=1060"
             alt="Traffic background"
             className="w-full h-full object-cover"
           />
@@ -49,10 +49,10 @@ function Home() {
 
         <div className="relative z-10 container mx-auto px-6 pt-32">
           <h1 className="text-5xl md:text-6xl font-bold text-white max-w-3xl">
-            Navigate Smart, Drive Better with Real-time Traffic Solutions
+           Your Trusted Companion for Safer, Smarter Highway Travel.
           </h1>
           <p className="mt-6 text-xl text-gray-200 max-w-2xl">
-            Get real-time traffic updates, optimal route planning, and smart navigation assistance for a smoother commute.
+            
           </p>
           <button className="mt-8 px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           onClick={()=> {
