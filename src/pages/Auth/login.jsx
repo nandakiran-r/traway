@@ -192,11 +192,9 @@ const SignIn = () => {
     return (
         <Dialog open={isOpen} onOpenChange={(open) => (open ? openModal() : handleCloseModal())}>
             <DialogTrigger asChild>
-              
-                    <Button>
-                        <Plus className="mr-1" /> Add
-                    </Button>
-               
+                <Button>
+                    Login
+                </Button>
             </DialogTrigger>
             <DialogContent>
                 <div className="login p-10">

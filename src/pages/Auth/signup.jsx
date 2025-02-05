@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { auth } from "@/config/firebase";
+import { auth,db } from "@/config/firebase";
 import {
   getAuth,
   onAuthStateChanged,
   sendPasswordResetEmail,
-  createUserWithEmailAndPassword, // Updated for sign-up
+  createUserWithEmailAndPassword, 
   signOut,
 } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore"; 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
@@ -33,6 +34,7 @@ import {
 } from "@/components/ui/dialog";
 import { LoadingButton } from "@/components/ui/loading-button";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { useUser } from "@/context/UserContext";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -54,36 +56,17 @@ const SignUp = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
-  const [isNewUser, setIsNewUser] = useState(true);
   const [restForm, setRestForm] = useState(false);
   const [message, setMessage] = useState("");
   const [parent] = useAutoAnimate();
+  const { user } = useUser();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const idTokenResult = await user.getIdTokenResult();
-        const role = idTokenResult.claims.role;
+    if (user) {
+      navigate("/app");
+    }
+  }, [user, navigate]);
 
-        if (isNewUser) {
-          setIsNewUser(false);
-        } else {
-          if (form.getValues("email") === "" && form.getValues("password") === "") {
-            toast({
-              title: "Already signed in",
-              description: "You are already signed in",
-            });
-          }
-
-        }
-      }
-    });
-    return () => unsubscribe();
-  }, [isNewUser]);
-
-  const handleContact = () => {
-    navigate("/contact");
-  };
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
@@ -97,79 +80,63 @@ const SignUp = () => {
     },
   });
 
-  const formRest = useForm({
-    resolver: zodResolver(formSchemaRest),
-    defaultValues: {
-      email: "",
-    },
-  });
+  // const formRest = useForm({
+  //   resolver: zodResolver(formSchemaRest),
+  //   defaultValues: {
+  //     email: "",
+  //   },
+  // });
 
-  async function onSubmitReset(values) {
-    try {
-      setLoading(true);
-      const auth = getAuth();
-      await sendPasswordResetEmail(auth, values.email)
-        .then(() => {
-          toast({
-            variant: "success",
-            title: "Password reset email sent",
-            description: "Check your email to reset your password",
-          });
-          setMessage("Check your email to reset your password");
-        })
-        .catch((error) => {
-          console.error("Error sending password reset email:", error.message);
-        });
-    } catch (error) {
-      console.error("Error sending password reset email:", error);
-      toast({
-        variant: "destructive",
-        title: "Error sending password reset email",
-        description: error.message,
-      });
-    } finally {
-      setLoading(false);
-    }
-  }
+  // async function onSubmitReset(values) {
+  //   try {
+  //     setLoading(true);
+  //     const auth = getAuth();
+  //     await sendPasswordResetEmail(auth, values.email)
+  //       .then(() => {
+  //         toast({
+  //           variant: "success",
+  //           title: "Password reset email sent",
+  //           description: "Check your email to reset your password",
+  //         });
+  //         setMessage("Check your email to reset your password");
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error sending password reset email:", error.message);
+  //       });
+  //   } catch (error) {
+  //     console.error("Error sending password reset email:", error);
+  //     toast({
+  //       variant: "destructive",
+  //       title: "Error sending password reset email",
+  //       description: error.message,
+  //     });
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }
 
   async function onSubmit(values) {
     try {
       setLoading(true);
-      const userCredential = await createUserWithEmailAndPassword( // Updated for sign-up
-        auth,
-        values.email,
-        values.password,
-      );
+      const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
       const user = userCredential.user;
-
-      const idTokenResult = await user.getIdTokenResult();
-      const role = idTokenResult.claims.role;
-
-    //   if (role === "admin") {
-    //     toast({
-    //       variant: "destructive",
-    //       title: "User sign-up session",
-    //       description: "Admin can only login to admin dashboard",
-    //     });
-    //     await signOut(auth);
-    //     navigate("/admin/login");
-    //   } else if (role === "user") {
-    //     toast({
-    //       variant: "success",
-    //       title: "Signed up",
-    //       description: "You have successfully signed up",
-    //       duration: 2000,
-    //     });
-    //     navigate("/");
-    //   } else {
-    //     toast({
-    //       variant: "destructive",
-    //       title: "Error",
-    //       description: "Unknown role",
-    //       duration: 2000,
-    //     });
-    //     navigate("/contact");
-    //   }
+  
+      // Save user info in Firestore under 'users' collection
+      await setDoc(doc(db, "users", user.uid), {
+        uid: user.uid,
+        email: user.email,
+        createdAt: new Date(),
+        role: "user", // Default role, modify as needed
+      });
+  
+      toast({
+        variant: "success",
+        title: "Signed up",
+        description: "Account successfully created!",
+        duration: 2000,
+      });
+  
+      navigate("/"); // Redirect to homepage
     } catch (error) {
       console.error("Error signing up:", error);
       toast({
@@ -182,11 +149,6 @@ const SignUp = () => {
       setLoading(false);
     }
   }
-
-  const handleFilldata = () => {
-    form.setValue("email", "user@gmail.com");
-    form.setValue("password", "password");
-  };
 
   const handleResetForm = () => {
     setRestForm(!restForm);
