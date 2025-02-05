@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Car, Map, Clock, Bell, BarChart3, Shield, Phone, Mail, MapPin, Users, Building2, Trophy, History } from 'lucide-react';
 import { useNavigate } from 'react-router';
+import logo from '@/assets/logo.png';
 
 function Home() {
   const [formData, setFormData] = useState({
@@ -33,7 +34,8 @@ function Home() {
         <nav className="relative z-10 container mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <Car className="h-8 w-8 text-white" />
+              <img src={logo} alt="Traway" className="h-8 w-8" />
+              {/* <Car className="h-8 w-8 text-white" /> */}
               <span className="text-2xl font-bold text-white">Traway</span>
             </div>
             <div className="hidden md:flex space-x-8">
