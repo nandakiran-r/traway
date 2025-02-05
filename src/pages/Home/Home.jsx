@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Car, Map, Clock, Bell, BarChart3, Shield, Phone, Mail, MapPin, Users, Building2, Trophy, History } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import logo from '@/assets/logo.png';
+import bg from '@/assets/bg.jpg';
+
 
 function Home() {
   const [formData, setFormData] = useState({
@@ -24,7 +26,7 @@ function Home() {
       <header id="home" className="relative h-[600px]">
         <div className="absolute inset-0">
           <img
-            src="https://imgcdn.stablediffusionweb.com/2024/4/12/a01d443d-af6a-464a-8002-85a2236a5615.jpg"
+            src={bg}
             alt="Traffic background"
             className="w-full h-full object-cover"
           />
@@ -34,7 +36,7 @@ function Home() {
         <nav className="relative z-10 container mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <img src={logo} alt="Traway" className="h-8 w-8" />
+              <img src={logo} alt="Traway" style={{filter: "brightness(100000%)"}} className="h-8 w-8" />
               {/* <Car className="h-8 w-8 text-white" /> */}
               <span className="text-2xl font-bold text-white">Traway</span>
             </div>
@@ -168,6 +170,21 @@ function Home() {
         </div>
       </section>
 
+{/* CTA Section */}
+<section className="py-20 bg-blue-900">
+  <div className="container mx-auto px-6 text-center">
+    <h2 className="text-3xl font-bold text-white mb-8">
+      Ready to Transform Your Daily Journey?
+    </h2>
+    <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+      Join thousands of satisfied users who have made their journey smoother with Traway.
+    </p>
+    <button className="px-8 py-3 bg-white text-blue-600 rounded-lg hover:bg-gray-100 transition-colors">
+      Download Now
+    </button>
+  </div>
+</section>
+
       {/* Contact Section */}
       <section id="contact" className="py-20 bg-gray-50">
         <div className="container mx-auto px-6">
@@ -251,21 +268,6 @@ function Home() {
               </form>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 bg-blue-800">
-        <div className="container mx-auto px-6 text-center">
-          <h2 className="text-3xl font-bold text-white mb-8">
-            Ready to Transform Your Daily Journey?
-          </h2>
-          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            Join thousands of satisfied users who have made their journey smoother with Traway.
-          </p>
-          <button className="px-8 py-3 bg-white text-blue-600 rounded-lg hover:bg-gray-100 transition-colors">
-            Download Now
-          </button>
         </div>
       </section>
 
