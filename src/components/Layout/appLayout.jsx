@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
-import { Car, Home, ScrollText, AlertCircle, Users, Settings, LogOut, Menu, X, Bell, Search, FileText, BookUser, TriangleAlert } from "lucide-react";
+import { Car, Home, ScrollText, AlertCircle, Users, Settings, LogOut, Menu, X, Bell, Search, FileText, BookUser, TriangleAlert, Toilet } from "lucide-react";
 import { useUser } from '@/context/UserContext'
 import SignIn from "@/pages/Auth/login";
 
@@ -34,6 +34,9 @@ function AppLayout() {
         }
         else if (pathname.includes("report")) {
             setActiveTab("report");
+        }
+        else if (pathname.includes("restrooms")) {
+            setActiveTab("restrooms");
         }
         else if (pathname.includes("settings")) {
             setActiveTab("settings");
@@ -76,6 +79,7 @@ function AppLayout() {
                         { name: "Home", icon: <Home />, tab: "home" },
                         { name: "Petition Hub", icon: <ScrollText />, tab: "petitions" },
                         { name: "Incident Reports", icon: <AlertCircle />, tab: "incidents" },
+                        { name: "Restrooms", icon: <Toilet />, tab: "restrooms" },
                         { name: "Travel Together", icon: <Users />, tab: "travel" },
                         { name: "Breach Report", icon: <TriangleAlert />, tab: "report" },
                         { name: "Awareness", icon: <BookUser />, tab: "awareness" },
