@@ -72,33 +72,33 @@ function Home() {
           <div className="grid md:grid-cols-3 gap-12">
             <FeatureCard 
               icon={<Map className="h-8 w-8 text-blue-600" />}
-              title="Real-time Navigation"
-              description="Get accurate, real-time traffic updates and route optimization"
+              title="Travel Together"
+              description="Share your route, find a ride"
             />
             <FeatureCard 
               icon={<Clock className="h-8 w-8 text-blue-600" />}
-              title="Time Prediction"
-              description="Accurate arrival time predictions based on current traffic conditions"
+              title="Relocated Shops"
+              description="Track down your favorite relocated shops "
             />
             <FeatureCard 
               icon={<Bell className="h-8 w-8 text-blue-600" />}
-              title="Traffic Alerts"
-              description="Instant notifications about accidents, road work, and delays"
+              title="Incident Report"
+              description="Swift reporting for rapid emergency response"
             />
             <FeatureCard 
               icon={<BarChart3 className="h-8 w-8 text-blue-600" />}
-              title="Traffic Analytics"
-              description="Detailed traffic patterns and historical data analysis"
+              title="Breach Report"
+              description="Report traffic breaches with ease!"
             />
             <FeatureCard 
               icon={<Shield className="h-8 w-8 text-blue-600" />}
-              title="Safe Routes"
-              description="Priority routing through safer and well-maintained roads"
+              title="Petition Hub"
+              description="Raise your voice—submit petitions for highway improvements!"
             />
             <FeatureCard 
               icon={<Car className="h-8 w-8 text-blue-600" />}
-              title="Vehicle Tracking"
-              description="Keep track of your fleet with advanced vehicle monitoring"
+              title="Restroom Finder"
+              description=" Quickly locate restrooms for a smooth, comfortable journey!"
             />
           </div>
         </div>
@@ -110,8 +110,7 @@ function Home() {
           <div className="max-w-3xl mx-auto text-center mb-16">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">About Traway</h2>
             <p className="text-lg text-gray-600">
-              Leading the way in smart traffic solutions since 2020, Traway has been committed to making commuting easier and more efficient for everyone.
-            </p>
+            Traway is a smart highway travel companion designed to make journeys safer and more convenient. Easily find relocated shops, nearby restrooms, and essential stops along your route. Report traffic violations, submit petitions for highway improvements, and stay informed about road conditions. With features that enhance security, comfort, and community, Traway ensures a smoother and more reliable travel experience for everyone on the road.            </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-12 items-center mb-20">
@@ -125,8 +124,7 @@ function Home() {
             <div>
               <h3 className="text-2xl font-bold text-gray-900 mb-6">Our Mission</h3>
               <p className="text-gray-600 mb-6">
-                At Traway, we're on a mission to revolutionize traffic management through innovative technology and data-driven solutions. We believe in creating smarter cities where traffic flows seamlessly and commuters spend less time on the road.
-              </p>
+              Traway aims to make highway travel safer, more convenient, and community-driven. We connect travelers with essential services, enable secure ride-sharing, and provide platforms for reporting issues and improving road conditions. Our goal is to ensure smoother, safer, and more reliable journeys for everyone.              </p>
               <div className="grid grid-cols-2 gap-6">
                 <div className="flex items-center space-x-3">
                   <Users className="h-6 w-6 text-blue-600" />
@@ -152,20 +150,17 @@ function Home() {
             <div className="text-center p-6">
               <h4 className="text-xl font-bold text-gray-900 mb-3">Our Vision</h4>
               <p className="text-gray-600">
-                To create smarter, more connected cities where traffic flows efficiently and sustainably.
-              </p>
+              To revolutionize highway travel with safety, convenience, and community-driven solutions.              </p>
             </div>
             <div className="text-center p-6">
               <h4 className="text-xl font-bold text-gray-900 mb-3">Our Values</h4>
               <p className="text-gray-600">
-                Innovation, reliability, and user-centric solutions drive everything we do.
-              </p>
+              Safety, reliability, convenience, and community—driving better travel experiences for everyone.              </p>
             </div>
             <div className="text-center p-6">
               <h4 className="text-xl font-bold text-gray-900 mb-3">Our Impact</h4>
               <p className="text-gray-600">
-                Reducing commute times and environmental impact through smart traffic management.
-              </p>
+              Enhancing highway travel by improving safety, accessibility, and connectivity for all travelers.              </p>
             </div>
           </div>
         </div>
@@ -192,7 +187,7 @@ function Home() {
                     <Phone className="h-6 w-6 text-blue-600 mt-1" />
                     <div>
                       <h4 className="font-semibold">Phone</h4>
-                      <p className="text-gray-600">+1 (555) 123-4567</p>
+                      <p className="text-gray-600">+91 (555) 123-4567</p>
                     </div>
                   </div>
                   <div className="flex items-start space-x-4">
@@ -258,10 +253,10 @@ function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-blue-600">
+      <section className="py-20 bg-blue-700">
         <div className="container mx-auto px-6 text-center">
           <h2 className="text-3xl font-bold text-white mb-8">
-            Ready to Transform Your Daily Commute?
+            Ready to Transform Your Daily Journey?
           </h2>
           <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
             Join thousands of satisfied users who have made their journey smoother with Traway.
