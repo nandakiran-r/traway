@@ -11,6 +11,7 @@ function Report() {
         location: '',
     });
     const [loading, setLoading] = useState(true); // Loading state
+    const [selectedReport, setSelectedReport] = useState(null); // Selected report for modal
 
     // Fetch reports from Firestore
     useEffect(() => {
@@ -56,7 +57,8 @@ function Report() {
             });
 
             // Show success message
-            alert("Thank you for your report! You've earned 10 credits.");
+            alert("Thank you for your report!");
+            window.location.reload()
         } catch (error) {
             console.error("Error submitting report:", error);
             alert("An error occurred while submitting your report. Please try again.");
@@ -89,17 +91,21 @@ function Report() {
                 </button>
             </div>
 
-            {/* Reports Section */}
+            {/* Recent Reports Section */}
             <div className="bg-white rounded-xl shadow-lg p-6">
                 <h2 className="text-lg font-semibold mb-4">Recent Reports</h2>
                 {loading ? (
                     <p className="text-gray-500">Loading...</p> // Show loading message
                 ) : reports.length > 0 ? (
-                    <ul className="space-y-4">
+                    <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {reports.map((report) => (
-                            <li key={report.id} className="p-4 bg-gray-50 rounded-lg">
+                            <li
+                                key={report.id}
+                                className="p-4 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
+                                onClick={() => setSelectedReport(report)} // Open modal on click
+                            >
                                 <h3 className="font-medium text-gray-900">{report.location}</h3>
-                                <p className="text-sm text-gray-600">{report.description}</p>
+                                <p className="text-sm text-gray-600 line-clamp-2">{report.description}</p>
                                 <img
                                     src={report.image}
                                     alt="Report Evidence"
@@ -128,7 +134,6 @@ function Report() {
                                     placeholder="Describe the violation..."
                                     rows="3"
                                     className="w-full p-2 border border-gray-300 rounded"
-                                    required
                                 ></textarea>
                             </div>
                             <div>
@@ -140,12 +145,26 @@ function Report() {
                                     onChange={handleInputChange}
                                     placeholder="Enter location..."
                                     className="w-full p-2 border border-gray-300 rounded"
-                                    required
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Image</label>
-                                <p className="text-gray-500">A default image will be used for your report.</p>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Upload Image</label>
+                                <label
+                                    htmlFor="image-upload"
+                                    className="w-full p-4 border-2 border-dashed border-gray-300 rounded flex justify-center items-center cursor-pointer hover:border-blue-500 transition-colors"
+                                >
+                                    <UploadCloud className="h-6 w-6 text-gray-500 mr-2" />
+                                    <span className="text-gray-500">Click to upload or drag and drop</span>
+                                </label>
+                                <input
+                                    id="image-upload"
+                                    type="file"
+                                    accept="image/*"
+                                    className="hidden"
+                                />
+                                {formData.image && (
+                                    <p className="mt-2 text-sm text-gray-600">{formData.image.name || "Image selected"}</p>
+                                )}
                             </div>
                             <div className="flex justify-end space-x-2">
                                 <button
@@ -163,6 +182,35 @@ function Report() {
                                 </button>
                             </div>
                         </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Report Details Modal */}
+            {selectedReport && (
+                <div className="fixed inset-0 bg-[rgba(0,0,0,.5)] flex justify-center items-center z-50">
+                    <div className="bg-white rounded-xl shadow-lg p-6 max-w-2xl w-full">
+                        <h2 className="text-xl font-bold mb-4">Report Details</h2>
+                        <div className="space-y-4">
+                            <h3 className="font-medium text-gray-900">Location:</h3>
+                            <p>{selectedReport.location}</p>
+                            <h3 className="font-medium text-gray-900">Description:</h3>
+                            <p>{selectedReport.description}</p>
+                            <h3 className="font-medium text-gray-900">Evidence Image:</h3>
+                            <img
+                                src={selectedReport.image}
+                                alt="Report Evidence"
+                                className="w-full h-80 object-cover rounded-md"
+                            />
+                        </div>
+                        <div className="mt-6 flex justify-end">
+                            <button
+                                onClick={() => setSelectedReport(null)} // Close modal
+                                className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+                            >
+                                Close
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}

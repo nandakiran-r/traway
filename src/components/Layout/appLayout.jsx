@@ -32,8 +32,8 @@ function AppLayout() {
         else if (pathname.includes("travel")) {
             setActiveTab("travel");
         }
-        else if (pathname.includes("safety")) {
-            setActiveTab("safety");
+        else if (pathname.includes("report")) {
+            setActiveTab("report");
         }
         else if (pathname.includes("settings")) {
             setActiveTab("settings");
