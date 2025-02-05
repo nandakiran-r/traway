@@ -1,3 +1,5 @@
+import { X } from 'lucide-react';
+
 
 
 function TravelForm({ onClose }) {
@@ -87,3 +89,5 @@ function TravelForm({ onClose }) {
       </div>
     );
   }
+
+  export default TravelForm;

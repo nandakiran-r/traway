@@ -5,6 +5,7 @@ import { db } from "@/config/firebase";
 import { useUser } from '@/context/UserContext'
 import SignIn from "@/pages/Auth/login";
 import PetitionForm from './Form/PetitionForm'
+import { ThumbsUp } from "lucide-react";
 
 function PetitionItem({ title, location, signatures, goal, daysLeft }) {
   const progress = (signatures / goal) * 100;
@@ -34,6 +35,44 @@ function PetitionItem({ title, location, signatures, goal, daysLeft }) {
   )
 }
 
+function PetitionItemTrending({ id, title, location, signatures, goal, daysLeft }) {
+  const progress = (signatures / goal) * 100;
+
+  const handleSignClick = (id) => {
+    console.log("Sign petition with ID:", id);
+  }
+
+  return (
+    <div className="p-4 bg-gray-50 rounded-lg">
+      <div className="flex justify-between items-start mb-2">
+        <div>
+          <h3 className="font-medium text-gray-900">{title}</h3>
+          <p className="text-sm text-gray-500">{location}</p>
+        </div>
+        <span className="text-sm text-orange-600 font-medium">{daysLeft} days left</span>
+      </div>
+      <div className="mt-2">
+        <div className="flex justify-between text-sm mb-1">
+          <span>{signatures} signatures</span>
+          <span>{goal} goal</span>
+        </div>
+        <div className="w-full bg-gray-200 rounded-full h-2">
+          <div
+            className="bg-blue-600 rounded-full h-2"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+      </div>
+      <div className="flex items-center space-x-2 mt-4 cursor-pointer select-none" onClick={() => handleSignClick(id)} >
+        <ThumbsUp className="h-5 w-5 text-blue-600" />
+        <span className="text-blue-600 font-medium">Sign this petition</span>
+      </div>
+    </div>
+
+  )
+}
+
+
 function PetitionHub() {
   const { user } = useUser();
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -42,7 +81,7 @@ function PetitionHub() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
-  
+
   const handleOpenLogin = () => {
     setIsLoginOpen(true);
   };
@@ -73,7 +112,7 @@ function PetitionHub() {
 
         // Fetch user-created petitions
         if (user) {
-          const userQuery = query(petitionsRef);
+          const userQuery = query(petitionsRef, orderBy("createdAt", "desc"));
           const userSnapshot = await getDocs(userQuery);
           setUserPetitions(userSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
         }
@@ -104,46 +143,53 @@ function PetitionHub() {
       {/* Petition Sections */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Trending Petitions */}
-        <div className="bg-white rounded-xl shadow-lg p-6">
+        <div className="bg-white rounded-xl shadow-lg p-6 h-fit">
           <h2 className="text-lg font-semibold mb-4">Trending Petitions</h2>
-          {loading ? (
-            <p>Loading...</p>
-          ) : trendingPetitions.length > 0 ? (
-            trendingPetitions.map((petition) => (
-              <PetitionItem
-                key={petition.id}
-                title={petition.title}
-                location={petition.place}
-                signatures={petition.signatures}
-                goal={petition.goal}
-                daysLeft={15} // Can replace with dynamic days calculation
-              />
-            ))
-          ) : (
-            <p>No trending petitions yet.</p>
-          )}
+          <div className="space-y-4">
+            {loading ? (
+              <p>Loading...</p>
+            ) : trendingPetitions.length > 0 ? (
+              trendingPetitions.map((petition) => (
+                <>
+                  <PetitionItemTrending
+                    key={petition.id}
+                    id={petition.id}
+                    title={petition.title}
+                    location={petition.place}
+                    signatures={petition.signatures}
+                    goal={petition.goal}
+                    daysLeft={15}
+                  />
+                </>
+              ))
+            ) : (
+              <p>No trending petitions yet.</p>
+            )}
+          </div>
         </div>
 
         {/* User's Petitions */}
         {user && (
-          <div className="bg-white rounded-xl shadow-lg p-6">
+          <div className="bg-white rounded-xl shadow-lg p-6 h-fit">
             <h2 className="text-lg font-semibold mb-4">Your Petitions</h2>
-            {loading ? (
-              <p>Loading...</p>
-            ) : userPetitions.length > 0 ? (
-              userPetitions.map((petition) => (
-                <PetitionItem
-                  key={petition.id}
-                  title={petition.title}
-                  location={petition.place}
-                  signatures={petition.signatures}
-                  goal={petition.goal}
-                  daysLeft={15}
-                />
-              ))
-            ) : (
-              <p>You haven't created any petitions yet.</p>
-            )}
+            <div className="space-y-4">
+              {loading ? (
+                <p>Loading...</p>
+              ) : userPetitions.length > 0 ? (
+                userPetitions.map((petition) => (
+                  <PetitionItem
+                    key={petition.id}
+                    title={petition.title}
+                    location={petition.place}
+                    signatures={petition.signatures}
+                    goal={petition.goal}
+                    daysLeft={15}
+                  />
+                ))
+              ) : (
+                <p>You haven't created any petitions yet.</p>
+              )}
+            </div>
           </div>
         )}
       </div>
