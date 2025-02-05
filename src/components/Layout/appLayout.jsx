@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
-import { Car, Home, ScrollText, AlertCircle, Users, Shield, Settings, LogOut, Menu, X, Bell, Search, FileText } from "lucide-react";
+import { Car, Home, ScrollText, AlertCircle, Users, Shield, Settings, LogOut, Menu, X, Bell, Search, FileText, BookUser } from "lucide-react";
 // import PetitionHub from "@/components/PetitionHub";
 // import IncidentReports from "@/components/IncidentReports";
 // import TravelTogether from "@/components/TravelTogether";
@@ -35,6 +35,9 @@ function AppLayout() {
         }
         else if (pathname.includes("settings")) {
             setActiveTab("settings");
+        }
+        else if (pathname.includes("awareness")) {
+            setActiveTab("awareness");
         }
         else {
             setActiveTab("home");
@@ -74,6 +77,7 @@ function AppLayout() {
                         { name: "Incident Reports", icon: <AlertCircle />, tab: "incidents" },
                         { name: "Travel Together", icon: <Users />, tab: "travel" },
                         { name: "Safety Alerts", icon: <Shield />, tab: "safety" },
+                        { name: "Awareness", icon: <BookUser />, tab: "awareness" },
                         { name: "Settings", icon: <Settings />, tab: "settings" },
                     ].map(({ name, icon, tab }) => (
                         <button

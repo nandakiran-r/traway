@@ -4,6 +4,7 @@ import Layout from '@/components/Layout/layout';
 import { Home, SignUp, Login, Map } from '@/pages';
 import { AppPage, PetitionHub, TravelTogether, Settings, Bathrooms, IncidentReports, SafetyAlerts } from './pages/App';
 import AppLayout from './components/Layout/appLayout';
+import Awareness from './pages/App/Awareness';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="travel" element={<TravelTogether />} />
           <Route path='toilets' element={<Bathrooms />} />
           <Route path="safety" element={<SafetyAlerts />} />
+          <Route path="awareness" element={<Awareness />} />
           <Route path="settings" element={<Settings />} />
 
         </Route>
