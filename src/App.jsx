@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from '@/components/Layout/layout';
 import { Home, SignUp, Login, Map } from '@/pages';
-import { AppPage, PetitionHub, TravelTogether, Settings, Restrooms, IncidentReports, Report } from './pages/App';
+import { AppPage, PetitionHub, TravelTogether, Settings, Restrooms, IncidentReports, Report,RelocatedShops } from './pages/App';
 import AppLayout from './components/Layout/appLayout';
 import Awareness from './pages/App/Awareness';
 
@@ -22,6 +22,7 @@ function App() {
           <Route path='restrooms' element={<Restrooms />} />
           <Route path="report" element={<Report />} />
           <Route path="awareness" element={<Awareness />} />
+          <Route path="relocated" element={<RelocatedShops />} />
           <Route path="settings" element={<Settings />} />
 
         </Route>

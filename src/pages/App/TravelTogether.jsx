@@ -124,11 +124,62 @@ function TravelTogether() {
             </div>
           </div>
         </div>
+        {/* Instructions Section */}
+        <div className="lg:col-span-1">
+          <div className="bg-white rounded-xl shadow-lg p-6">
+            <h2 className="text-lg font-semibold mb-4">How It Works</h2>
+            <div className="space-y-4">
+              <div className="flex items-start space-x-3">
+                <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
+                  <span className="text-blue-600 font-medium">1</span>
+                </div>
+                <div>
+                  <h3 className="font-medium">Post Your Route</h3>
+                  <p className="text-sm text-gray-500">
+                    Share your travel details, including starting point,
+                    destination, date, and time.
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-3">
+                <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
+                  <span className="text-blue-600 font-medium">2</span>
+                </div>
+                <div>
+                  <h3 className="font-medium">Connect with Travelers</h3>
+                  <p className="text-sm text-gray-500">
+                    Other users can view your route and request to join your
+                    trip.
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-3">
+                <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
+                  <span className="text-blue-600 font-medium">3</span>
+                </div>
+                <div>
+                  <h3 className="font-medium">Travel Together</h3>
+                  <p className="text-sm text-gray-500">
+                    Coordinate with your fellow travelers and enjoy the journey!
+                  </p>
+                </div>
+              </div>
+            </div>
+            <p className="text-center text-gray-500 text-sm mt-6">
+              Travel with strangers and make new friends. Share your travel route
+              to help others find a ride.
+            </p>
+          </div>
+        </div>
+
+
       </div>
+
+
 
       {/* Travel Form Modal */}
       {showForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/70 bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl p-6 w-full max-w-2xl">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold">Post Travel Route</h2>

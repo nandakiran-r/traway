@@ -1,4 +1,4 @@
-import { Car, Map, BarChart3, AlertTriangle, Settings, Bell, Search, ArrowUp, ArrowDown, Store,  Toilet, FileText, Truck, CarTaxiFront, Home, ScrollText, AlertCircle, Users, Shield, Menu, X, Upload, MessageCircle, Mic, MapPin, ChevronRight, Filter, Phone, LogOut } from "lucide-react";
+import { Car, Map, BarChart3, AlertTriangle, Settings, Bell, Search, ArrowUp, ArrowDown, Store, Toilet, FileText, Truck, CarTaxiFront, Home, ScrollText, AlertCircle, Users, Shield, Menu, X, Upload, MessageCircle, Mic, MapPin, ChevronRight, Filter, Phone, LogOut,Plus } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useUser } from '@/context/UserContext'
@@ -274,36 +274,74 @@ function PetitionItem({ title, location, signatures, goal, daysLeft }) {
     </div>
   )
 }
-
 function RelocatedShops() {
+  const { user } = useUser();
+  const [shops, setShops] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showForm, setShowForm] = useState(false);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+
+  useEffect(() => {
+    fetchRelocatedShops();
+  }, []);
+
+ 
+
+  const fetchRelocatedShops = async () => {
+    try {
+      const relocatedShopsRef = collection(db, 'shops');
+      const snapshot = await getDocs(relocatedShopsRef);
+      setShops(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching shops:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredShops = shops.filter(shop =>
+    shop.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    shop.category.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-6">
-      <h2 className="text-2xl font-semibold text-gray-900 mb-4">Recently Relocated Shops</h2>
-      <div className="space-y-4">
-        <ShopItem
-          name="Green Grocery"
-          oldLocation="123 Main St"
-          newLocation="456 Oak Ave"
-          date="2024-03-15"
-          category="Grocery"
-        />
-        <ShopItem
-          name="Tech Hub"
-          oldLocation="789 Pine St"
-          newLocation="321 Maple Rd"
-          date="2024-03-10"
-          category="Electronics"
-        />
-        <ShopItem
-          name="Coffee House"
-          oldLocation="444 Elm St"
-          newLocation="555 Cedar Ln"
-          date="2024-03-05"
-          category="Cafe"
-        />
+    <div className=" bg-gray-50 p-6 rounded-2xl">
+      <div className="max-w-6xl mx-auto">
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+              <Store className="h-6 w-6" />
+           Recent  Relocated Shops
+            </h1>
+          
+          </div>
+
+          
+
+          <div className="grid gap-6 max-h-[500px] overflow-auto">
+            {loading ? (
+              <div>
+                <div className="text-sm text-center">Loading...</div>
+              </div>
+            ) : (filteredShops.length > 0 ? filteredShops.map((shop) => (
+              <ShopItem
+                key={shop.id}
+                name={shop.name}
+                oldLocation={shop.oldAddress}
+                newLocation={shop.newAddress}
+                date={shop.relocatedDate}
+                category={shop.category}
+              />
+            )) : (
+              <div className="text-center text-gray-500">No shops found</div>
+            ))}
+          </div>
       </div>
+
     </div>
-  )
+  );
 }
 
 function ShopItem({ name, oldLocation, newLocation, date, category }) {
@@ -323,8 +361,9 @@ function ShopItem({ name, oldLocation, newLocation, date, category }) {
         </span>
       </div>
     </div>
-  )
+  );
 }
+
 
 function GenderNeutralBathrooms() {
   return (
@@ -359,7 +398,7 @@ function BathroomItem({ location, amenities, status, distance }) {
 
   return (
     <div className="flex items-start space-x-4 p-4 bg-gray-50 rounded-lg">
-      <Toilet  className="h-6 w-6 text-green-600 mt-1" />
+      <Toilet className="h-6 w-6 text-green-600 mt-1" />
       <div className="flex-1">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-medium text-gray-900">{location}</h3>

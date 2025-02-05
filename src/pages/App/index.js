@@ -5,4 +5,5 @@ export { default as Settings } from './Settings.jsx'
 export { default as TravelTogether } from './TravelTogether.jsx'
 export { default as IncidentReports } from './IncidentReports.jsx'
 export { default as Report } from './Report.jsx'
+export { default as RelocatedShops } from './RelocatedShop.jsx'
 

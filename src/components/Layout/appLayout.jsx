@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
-import { Car, Home, ScrollText, AlertCircle, Users, Settings, LogOut, Menu, X, Bell, Search, FileText, BookUser, TriangleAlert, Toilet } from "lucide-react";
+import { Car, Home, ScrollText, AlertCircle, Users, Settings, LogOut, Menu, X, Bell, Search, FileText, BookUser, TriangleAlert, Toilet,Store } from "lucide-react";
 import { useUser } from '@/context/UserContext'
 import SignIn from "@/pages/Auth/login";
 import logo from '@/assets/logo.png';
@@ -19,7 +19,7 @@ function AppLayout() {
     const handleOpenLogin = () => {
         setIsLoginOpen(true);
     };
-    
+
     const handleCloseLogin = () => {
         setIsLoginOpen(false);
     };
@@ -44,6 +44,8 @@ function AppLayout() {
         }
         else if (pathname.includes("awareness")) {
             setActiveTab("awareness");
+        } else if (pathname.includes("relocated")) {
+            setActiveTab("relocated");
         }
         else {
             setActiveTab("home");
@@ -84,6 +86,7 @@ function AppLayout() {
                         { name: "Restrooms", icon: <Toilet />, tab: "restrooms" },
                         { name: "Travel Together", icon: <Users />, tab: "travel" },
                         { name: "Breach Report", icon: <TriangleAlert />, tab: "report" },
+                        { name: "Relocated Shops", icon: <Store />, tab: "relocated" },
                         { name: "Awareness", icon: <BookUser />, tab: "awareness" },
                         { name: "Settings", icon: <Settings />, tab: "settings" },
                     ].map(({ name, icon, tab }) => (
