@@ -23,7 +23,7 @@ function Home() {
       <header id="home" className="relative h-[600px]">
         <div className="absolute inset-0">
           <img
-            src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&q=80"
+            src="https://img.freepik.com/premium-photo/traffic-highway-with-sunset-view_693425-6854.jpg?w=1060"
             alt="Traffic background"
             className="w-full h-full object-cover"
           />
@@ -116,7 +116,7 @@ function Home() {
           <div className="grid md:grid-cols-2 gap-12 items-center mb-20">
             <div>
               <img
-                src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80"
+                src="https://thumbs.dreamstime.com/b/business-person-car-travel-green-screen-navigation-system-hand-pointing-to-map-mockup-traffic-app-web-help-work-336184576.jpg"
                 alt="Office team"
                 className="rounded-lg shadow-lg"
               />
@@ -253,7 +253,7 @@ function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-blue-700">
+      <section className="py-20 bg-blue-800">
         <div className="container mx-auto px-6 text-center">
           <h2 className="text-3xl font-bold text-white mb-8">
             Ready to Transform Your Daily Journey?
