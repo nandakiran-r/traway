@@ -58,9 +58,9 @@ function DashboardContent() {
       {/* Stats Overview */}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard icon={<Map className="h-6 w-6 text-blue-600" />} title="Active Routes" value="24" change={2} />
-        <StatCard icon={<Store className="h-6 w-6 text-purple-600" />} title="Relocated Shops" value="8" change={3} />
-        <StatCard icon={<Toilet className="h-6 w-6 text-green-600" />} title="Gender Neutral Bathrooms" value="15" change={5} />
-        <StatCard icon={<AlertTriangle className="h-6 w-6 text-red-600" />} title="Active Alerts" value="12" change={-2} />
+        <StatCard icon={<Store className="h-6 w-6 text-purple-600" />} title="Relocated Shops" value="500+" change={3} />
+        <StatCard icon={<Toilet className="h-6 w-6 text-green-600" />} title="Washrooms" value="100+" change={5} />
+        <StatCard icon={<AlertTriangle className="h-6 w-6 text-red-600" />} title="Active Alerts" value="12+" change={-2} />
       </div>
 
       {/* Main Content Sections */}
