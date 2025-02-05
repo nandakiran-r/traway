@@ -18,9 +18,6 @@ function TravelTogether() {
 
   const user = useUser();
 
-  console.log(user);
-  
-
   // Fetch routes from Firestore
   useEffect(() => {
     const fetchRoutes = async () => {
@@ -49,6 +46,7 @@ function TravelTogether() {
     try {
       await addDoc(collection(db, "routes"), {
         ...formData,
+        email: user.user.email,
         timestamp: serverTimestamp(), // Add timestamp for ordering
       });
       alert("Route posted successfully!");
@@ -104,11 +102,17 @@ function TravelTogether() {
                       <span>{route.to}</span>
                     </div>
                     <div className="mt-4 flex justify-between items-center">
-                      <button className="text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center space-x-1">
+                      <button onClick={() => {
+                        window.location.href = `mailto:${route.email}`
+                      }} className="text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center space-x-1">
                         <MessageCircle className="h-4 w-4" />
                         <span>Contact Driver</span>
                       </button>
-                      <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm">
+                      <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm"
+                        onClick={() => {
+                          window.location.href = `mailto:${route.email}`
+                        }}
+                      >
                         Request Seat
                       </button>
                     </div>
